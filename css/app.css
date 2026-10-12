@@ -235,7 +235,7 @@ details.sources summary { font-size: 13px; color: var(--muted); }
   display: grid; grid-template-rows: 20px 34px 14px 16px; row-gap: 4px; align-items: center; text-align: left;
   background: #fff; border: 1.5px solid var(--line); border-radius: 10px; padding: 12px 14px; box-shadow: var(--shadow-sm);
   min-width: 0; cursor: pointer; position: relative; color: var(--ink); font: inherit;
-  transition: transform .18s var(--ease), box-shadow .18s var(--ease), border-color .18s var(--ease);
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s var(--ease);
 }
 .kcard:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--s3); }
 .kcard.active { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(33, 65, 82, .12), var(--shadow-md); }
@@ -244,7 +244,7 @@ details.sources summary { font-size: 13px; color: var(--muted); }
 .kcard.ctx .kval { color: #fff; font-size: 22px; }
 .kcard.ctx .ksub { color: #d6e0e5; }
 .ctx-meter { background: rgba(255,255,255,.18); }
-.ctx-meter span { position: absolute; inset: 0 auto 0 0; background: #fff; border-radius: 3px; transition: width .35s var(--ease); }
+.ctx-meter span { position: absolute; inset: 0 auto 0 0; background: #fff; border-radius: 3px; transition: width .9s var(--ease); }
 .khead { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-width: 0; }
 .klabel { font-size: 11.5px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-weight: 700; display: flex; align-items: center; gap: 6px; white-space: nowrap; overflow: hidden; }
 .klabel i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; flex: none; }
@@ -253,11 +253,11 @@ details.sources summary { font-size: 13px; color: var(--muted); }
 .ksub { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pill { font-size: 11.5px; font-weight: 700; color: var(--navy); background: var(--s1); border-radius: 999px; padding: 2px 8px; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .pill.ghost { visibility: hidden; }
-.pill.pop { animation: pop .35s var(--ease); }
+.pill.pop { animation: pop .7s var(--ease); }
 @keyframes pop { 0% { transform: scale(.85); } 60% { transform: scale(1.08); } 100% { transform: scale(1); } }
 .kmeter { position: relative; height: 6px; background: var(--s1); border-radius: 3px; align-self: center; }
-.kmeter .fill { position: absolute; inset: 0 auto 0 0; border-radius: 3px; transition: width .35s var(--ease); }
-.today-tick { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; background: var(--ink); opacity: .55; border-radius: 1px; transition: left .35s var(--ease); }
+.kmeter .fill { position: absolute; inset: 0 auto 0 0; border-radius: 3px; transition: width .9s var(--ease); }
+.today-tick { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; background: var(--ink); opacity: .55; border-radius: 1px; transition: left .9s var(--ease); }
 .today-tick[hidden] { display: none; }
 .kmore {
   position: absolute; right: 12px; bottom: 10px; font-size: 11.5px; font-weight: 700; color: var(--navy);
@@ -269,20 +269,20 @@ details.sources summary { font-size: 13px; color: var(--muted); }
 
 /* Detail drawer over the map */
 .kdrawer {
-  position: absolute; top: 12px; right: 12px; bottom: 12px; width: 360px; z-index: 6;
+  position: absolute; top: 12px; right: 12px; width: 360px; max-height: calc(100% - 24px); z-index: 6;
   background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow-md);
   display: flex; flex-direction: column; transform: translateX(calc(100% + 24px)); opacity: 0; pointer-events: none;
-  transition: transform .3s var(--ease), opacity .2s var(--ease);
+  transition: transform .45s var(--ease), opacity .3s var(--ease);
 }
 .kdrawer.open { transform: none; opacity: 1; pointer-events: auto; }
 .kdrawer-hd { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 16px 18px 12px; border-bottom: 1px solid var(--line); }
 .kdrawer-hd h3 { margin: 2px 0 0; font-size: 18px; color: var(--navy); }
 .kdrawer-ctx { font-size: 11.5px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-weight: 700; }
 .kdrawer-close {
-  border: 1.5px solid var(--line); background: #fff; border-radius: var(--radius-sm); padding: 6px 12px; font-size: 13px;
-  font-weight: 700; color: var(--navy); cursor: pointer; transition: border-color .15s var(--ease);
+  width: 32px; height: 32px; margin: -4px -6px 0 0; border: 0; border-radius: 50%; background: none; color: var(--muted);
+  cursor: pointer; display: grid; place-items: center; flex: none; transition: background .15s var(--ease), color .15s var(--ease);
 }
-.kdrawer-close:hover { border-color: var(--navy); }
+.kdrawer-close:hover { background: var(--bg); color: var(--ink); }
 .kdrawer-body { padding: 14px 18px 18px; overflow-y: auto; font-size: 14px; }
 .kdrawer-body h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin: 16px 0 8px; }
 .dlead { margin: 0 0 6px; font-size: 15px; line-height: 1.45; }
@@ -291,9 +291,10 @@ details.sources summary { font-size: 13px; color: var(--muted); }
 .dline { display: grid; grid-template-columns: 96px 1fr 56px; gap: 10px; align-items: center; padding: 4px 0; font-size: 13px; }
 .dline b { text-align: right; font-variant-numeric: tabular-nums; }
 .dtrack { height: 8px; background: var(--s1); border-radius: 4px; position: relative; overflow: hidden; }
-.dtrack span { position: absolute; inset: 0 auto 0 0; border-radius: 4px; transition: width .35s var(--ease); }
+.dtrack span { position: absolute; inset: 0 auto 0 0; border-radius: 4px; transition: width .9s var(--ease); }
 .kdrawer-body .kv { margin-top: 12px; }
-.kdrawer-body .btn { margin-top: 8px; }
+.kdrawer-body .btn { margin-top: 4px; }
+.kdrawer-body > :last-child { margin-bottom: 0; }
 
 /* ---------- Map overlays ---------- */
 .btn.sm { padding: 8px 14px; font-size: 14px; }
@@ -351,10 +352,16 @@ details.sources summary { font-size: 13px; color: var(--muted); }
 .wcard {
   display: flex; flex-direction: column; background: #fff; border: 1.5px solid var(--line); border-radius: 14px;
   padding: 26px 24px 24px; box-shadow: var(--shadow-sm);
-  transition: transform .2s var(--ease), box-shadow .2s var(--ease), border-color .2s var(--ease);
-  animation: rise .45s var(--ease) both; animation-delay: calc(var(--i) * 80ms);
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s var(--ease);
+  animation: rise .6s var(--ease) backwards; animation-delay: calc(var(--i) * 80ms);
 }
-.wcard:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--s3); }
+.wcard { transform-origin: center; }
+.wcard:hover { transform: translateY(-6px) scale(1.03); box-shadow: 0 18px 40px rgba(27, 40, 48, .16); border-color: var(--navy); }
+.wcard:active { transform: translateY(-2px) scale(1.01); }
+/* On pick: chosen card zooms forward, the others step back */
+.welcome.choosing .wcard { transition: transform .4s var(--ease), opacity .4s var(--ease), box-shadow .4s var(--ease); }
+.welcome.choosing .wcard:not(.chosen) { opacity: .35; transform: scale(.96); }
+.welcome.choosing .wcard.chosen { transform: translateY(-8px) scale(1.07); border-color: var(--navy); box-shadow: 0 24px 50px rgba(27, 40, 48, .22); }
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 .wkicker { font-size: 12px; text-transform: uppercase; letter-spacing: .09em; font-weight: 700; color: var(--red-ink); }
 .wcard h2 { font-size: 22px; margin: 6px 0 6px; color: var(--ink); letter-spacing: -0.01em; }

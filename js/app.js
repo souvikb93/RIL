@@ -256,7 +256,7 @@ function buildKpis() {
   });
 }
 
-function tween(el, from, to, show, ms = 320) {
+function tween(el, from, to, show, ms = 850) {
   cancelAnimationFrame(el._raf);
   const t0 = performance.now();
   const step = (t) => {
@@ -333,7 +333,7 @@ function renderDrawer(r, base) {
         ${cmp('Electricity', `${fmt(v.windGWh / 1000, 1)} TWh/yr`, `${fmt(base.windGWh / 1000, 1)} TWh`)}
         <dt>Per turbine</dt><dd>${fmt(ASSUME.mwPerTurbine, 1)} MW · ${fmt(ASSUME.mwPerTurbine * ASSUME.flhWind / 1000, 1)} GWh/yr</dd></dl>
         <p class="dnote">Counted as modern 6.5 MW turbines. Many older turbines today are smaller, so the real count is higher.</p>
-        <button type="button" class="btn secondary block" data-layer-on="potential">Show land suitable for wind</button>`;
+        <button type="button" class="btn secondary" data-layer-on="potential">Show on map</button>`;
       break;
     case 'land': {
       const targetHa = geo.regionHa * ASSUME.windAreaTargetPct / 100;
@@ -344,7 +344,7 @@ function renderDrawer(r, base) {
         <dl class="kv">${cmp('Wind land', `${fmt(v.windHa)} ha`, `${fmt(base.windHa)} ha`)}
         ${cmp('Solar land', `${fmt(v.pvHa)} ha`, `${fmt(base.pvHa)} ha`)}
         <dt>Suitable for wind (demo)</dt><dd>${fmt(geo.windOrder.length * geo.cellHa)} ha</dd></dl>
-        <button type="button" class="btn secondary block" data-layer-on="potential">Show land suitable for wind</button>`;
+        <button type="button" class="btn secondary" data-layer-on="potential">Show on map</button>`;
       break;
     }
     case 'eeg': {
@@ -355,7 +355,7 @@ function renderDrawer(r, base) {
         ${cmp('From ground solar', eur(v.ffGWh * 1e6 * ASSUME.eegEurPerKwh), eur(base.ffGWh * 1e6 * ASSUME.eegEurPerKwh))}
         <dt>One turbine</dt><dd>≈ ${eur(perTurbine)} / year</dd></dl>
         <p class="dnote">Wind payments go to all municipalities within 2.5 km of a turbine. Rooftop solar doesn't count.</p>
-        <button type="button" class="btn secondary block" data-goto="place">Check a town</button>`;
+        <button type="button" class="btn secondary" data-goto="place">Check a town</button>`;
       break;
     }
   }
@@ -921,7 +921,14 @@ function buildUser() {
   document.addEventListener('click', (e) => {
     const g = e.target.closest('[data-goto]'); if (!g) return;
     e.preventDefault();
-    setMode(g.dataset.goto);
+    const card = g.closest('.wcard');
+    if (!card || matchMedia('(prefers-reduced-motion: reduce)').matches) { setMode(g.dataset.goto); return; }
+    $('#welcome').classList.add('choosing');
+    card.classList.add('chosen');
+    setTimeout(() => {
+      setMode(g.dataset.goto);
+      setTimeout(() => { $('#welcome').classList.remove('choosing'); card.classList.remove('chosen'); }, 300);
+    }, 420);
   });
   buildMap();
   Anim.mountAll();
