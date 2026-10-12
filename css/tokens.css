@@ -1,0 +1,62 @@
+/* Shared design tokens — colour rules in DESIGN.md (5 categories, nothing outside them). */
+:root {
+  /* Brand & limits */
+  --red: #E60000;
+  --red-ink: #B80000;
+  /* Interface */
+  --navy: #214152;
+  --navy-hover: #17303d;
+  --ink: #1b2830;
+  --muted: #5a6a74;
+  --faint: #8a979e;
+  --line: #dde3e7;
+  --bg: #f3f5f6;
+  --card: #ffffff;
+  /* Energy */
+  --wind: #037E9E;
+  --wind-ink: #025a71;
+  --solar: #FFD800;
+  --solar-roof: #F2B705;
+  --solar-ink: #8a6d00;
+  /* Context */
+  --nature: #66CC66;
+  --settle: #8e9aa1;
+  /* Data scale (navy tints) */
+  --s1: #e6edf1; --s2: #bccbd4; --s3: #8aa3b1; --s4: #56778a; --s5: #214152;
+
+  --radius: 8px;
+  --radius-sm: 6px;
+  --shadow-sm: 0 1px 2px rgba(27, 40, 48, .06), 0 1px 3px rgba(27, 40, 48, .08);
+  --shadow-md: 0 6px 20px rgba(27, 40, 48, .12);
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --font: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { font-family: var(--font); color: var(--ink); background: var(--bg); font-size: 15px; line-height: 1.45; }
+button, input, select { font-family: inherit; }
+:focus-visible { outline: 3px solid var(--navy); outline-offset: 2px; }
+
+/* Thin, quiet scrollbars everywhere */
+* { scrollbar-width: thin; scrollbar-color: #c4ced4 transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #c9d3d9; border-radius: 10px; border: 3px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: #9fb0ba; border: 3px solid transparent; background-clip: padding-box; }
+
+/* Brand mark: generic wind turbine in Brandenburg-Rot */
+.mark { border-radius: 8px; background: var(--red); display: grid; place-items: center; flex: none; }
+
+/* Buttons — text only (no icons in CTAs) */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-size: 15px; font-weight: 700; border-radius: var(--radius); padding: 10px 18px; line-height: 1.2;
+  cursor: pointer; border: 1.5px solid transparent; transition: background .15s var(--ease), border-color .15s var(--ease), box-shadow .15s var(--ease);
+}
+.btn.primary { background: var(--navy); color: #fff; }
+.btn.primary:hover { background: var(--navy-hover); }
+.btn.secondary { background: #fff; color: var(--ink); border-color: var(--line); box-shadow: var(--shadow-sm); }
+.btn.secondary:hover { border-color: var(--faint); box-shadow: var(--shadow-md); }
+.btn.block { width: 100%; }
+.btn:active { transform: scale(.98); }

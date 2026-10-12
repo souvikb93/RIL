@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EmPower</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="#" data-goto="home" aria-label="EmPower home">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="20" height="20">
+          <path d="M16 14v15M11.5 29h9" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <g fill="#fff">
+            <path d="M15.1 13 16 2.5l.9 10.5z"/>
+            <path d="M15.1 13 16 2.5l.9 10.5z" transform="rotate(120 16 13)"/>
+            <path d="M15.1 13 16 2.5l.9 10.5z" transform="rotate(240 16 13)"/>
+            <circle cx="16" cy="13" r="1.9"/>
+          </g>
+        </svg>
+      </span>
+      <span class="brand-name">EmPower</span>
+    </a>
+    <span class="region-chip">Oderland-Spree · Brandenburg</span>
+
+    <div class="user" id="user">
+      <button type="button" class="user-btn" id="userBtn" aria-haspopup="menu" aria-expanded="false">
+        <span class="avatar" id="avatar">G</span><span id="userName">Guest</span>
+        <svg class="chev" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="menu" id="userMenu" role="menu" hidden>
+        <a role="menuitem" href="index.html">Sign out</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="panel" id="panel">
+      <!-- Progress: 1 choose a question → 2 explore it -->
+      <ol class="stepper" aria-label="Progress">
+        <li id="step1"><span>1</span>Choose a question</li>
+        <li class="bar" aria-hidden="true"></li>
+        <li id="step2"><span>2</span><em id="step2Label">Explore</em></li>
+      </ol>
+
+      <!-- STEP 1 -->
+      <section class="view" data-view="home">
+        <h2 class="view-title">What do you want to find out?</h2>
+        <div class="choices">
+          <button type="button" class="choice" data-goto="today">
+            <span class="choice-k">Today</span>
+            <b>Where do we stand?</b>
+            <span class="choice-d">Renewable share, land and demand by district.</span>
+          </button>
+          <button type="button" class="choice" data-goto="plan">
+            <span class="choice-k">Plan</span>
+            <b>What if we build more?</b>
+            <span class="choice-d">Pick a target, adjust wind and solar, see the effect live.</span>
+          </button>
+          <button type="button" class="choice" data-goto="place">
+            <span class="choice-k">My place</span>
+            <b>What does it mean here?</b>
+            <span class="choice-d">Distance to turbines and income for one town.</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 2: TODAY -->
+      <section class="view" data-view="today">
+        <div class="view-hd"><button type="button" class="back" data-goto="home">All questions</button><h2>Where do we stand?</h2></div>
+        <div class="block">
+          <h3>Show on map</h3>
+          <div id="metricList" role="radiogroup" aria-label="Map metric"></div>
+        </div>
+        <details class="more">
+          <summary>Go deeper <span>energy mix, districts</span></summary>
+          <div id="todayDeep"></div>
+        </details>
+      </section>
+
+      <!-- STEP 2: PLAN -->
+      <section class="view" data-view="plan">
+        <div class="view-hd"><button type="button" class="back" data-goto="home">All questions</button><h2>What if we build more?</h2></div>
+        <div class="block">
+          <h3>Start from</h3>
+          <div class="seg" role="radiogroup" aria-label="Scenario" id="seg"></div>
+          <p class="note" id="scenarioNote"></p>
+        </div>
+        <div class="block">
+          <h3>Build more</h3>
+          <div id="slidersMain"></div>
+          <div id="pWarn"></div>
+        </div>
+        <details class="more">
+          <summary>More settings <span>rooftop solar, demand</span></summary>
+          <div id="slidersMore"></div>
+        </details>
+        <details class="more">
+          <summary>Go deeper <span>generation, households, CO₂</span></summary>
+          <div id="moreResults"></div>
+        </details>
+      </section>
+
+      <!-- STEP 2: MY PLACE -->
+      <section class="view" data-view="place">
+        <div class="view-hd"><button type="button" class="back" data-goto="home">All questions</button><h2>What does it mean here?</h2></div>
+        <div class="block">
+          <h3 id="placeLabel">Town or village</h3>
+          <div class="combo" id="placeCombo">
+            <input type="text" id="placeInput" role="combobox" aria-labelledby="placeLabel" aria-expanded="false"
+                   aria-controls="placeList" aria-autocomplete="list" placeholder="Search 266 places…" autocomplete="off">
+            <svg class="combo-chev" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <ul class="combo-list" id="placeList" role="listbox" hidden></ul>
+          </div>
+          <p class="note">Or click anywhere on the map.</p>
+        </div>
+        <div id="placeOut"></div>
+      </section>
+
+      <details class="sources">
+        <summary>Assumptions &amp; data sources</summary>
+        <div id="assumptions"></div>
+      </details>
+    </aside>
+
+    <section class="main">
+      <div class="kpis" id="kpis" aria-live="polite"></div>
+      <div class="mapwrap">
+        <div id="map"></div>
+        <div class="map-hint" id="mapHint" hidden></div>
+        <div class="layers">
+          <button class="btn secondary sm" id="layersBtn" type="button" aria-expanded="false" aria-controls="layersPop">Layers</button>
+          <div class="layers-pop" id="layersPop" hidden></div>
+        </div>
+        <div class="legend" id="legend"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.1.0/turf.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+/* Login — same structure as FarmDoc: 60/40 split, animation left, sign-in right. */
+.auth { display: flex; min-height: 100vh; }
+
+.auth-left {
+  flex: 1 1 60%; min-width: 0; display: flex; align-items: center; justify-content: center;
+  padding: 48px 40px; overflow: hidden;
+  background: linear-gradient(160deg, rgba(33, 65, 82, .09) 0%, rgba(33, 65, 82, .03) 70%, transparent 100%);
+  border-top: 4px solid var(--red);
+}
+.anim-wrap { width: 100%; display: flex; align-items: center; justify-content: center; }
+/* Wind-turbines-and-solar Lottie is a wide 1080×422 scene */
+.anim-stage { width: min(100%, 920px); aspect-ratio: 1080 / 422; }
+.anim-fallback { height: clamp(280px, 62vh, 640px); aspect-ratio: 1; max-width: 100%; }
+.anim-stage:empty { display: none; }
+.anim-stage svg { display: block; }
+
+/* Fallback illustration: rotors turn, slowly */
+.rotor { animation: spin 6s linear infinite; }
+.rotor.slow { animation-duration: 8.5s; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .rotor { animation: none; } }
+
+.auth-right {
+  flex: 1 1 40%; min-width: 0; display: flex; align-items: center; justify-content: center;
+  padding: 48px 40px; background: var(--card); border-top: 4px solid var(--red);
+}
+.auth-card { width: 100%; max-width: 420px; }
+
+.auth-brand { display: flex; align-items: center; gap: 14px; margin-bottom: clamp(28px, 4.5vh, 48px); }
+.auth-brand .mark { width: 48px; height: 48px; border-radius: 10px; }
+.auth-brand-name { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; color: var(--navy); }
+
+.auth-title { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 6px; color: var(--ink); }
+.auth-sub { font-size: 15px; color: var(--muted); margin: 0 0 clamp(28px, 4.5vh, 48px); }
+
+.flbl { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+#loginEmail {
+  width: 100%; height: 56px; padding: 0 16px; font-size: 16px; color: var(--ink);
+  border: 1.5px solid var(--line); border-radius: var(--radius); background: #fff; margin-bottom: 20px;
+  transition: border-color .15s var(--ease);
+}
+#loginEmail:hover { border-color: var(--faint); }
+#loginEmail:focus { outline: none; border-color: var(--navy); }
+.auth-ctl { height: 56px; }
+
+.auth-divider { display: flex; align-items: center; gap: 12px; margin: clamp(22px, 3.5vh, 36px) 0; color: var(--muted); font-size: 14px; }
+.auth-divider::before, .auth-divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+.btn-oauth {
+  display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%;
+  border-radius: var(--radius); background: #fff; color: var(--ink); font-size: 15px; font-weight: 700;
+  border: 1.5px solid var(--line); box-shadow: var(--shadow-sm); cursor: pointer; margin-bottom: 14px;
+  transition: box-shadow .15s var(--ease), border-color .15s var(--ease);
+}
+.btn-oauth:hover { box-shadow: var(--shadow-md); border-color: var(--faint); }
+.btn-oauth:active { transform: scale(.98); }
+
+/* Leaving: quick fade so the jump into the app feels intentional */
+body.leaving .auth { opacity: 0; transition: opacity .25s var(--ease); }
+
+@media (max-width: 900px) {
+  .auth-left { display: none; }
+  .auth-right { align-items: flex-start; padding: 32px 20px; }
+}
