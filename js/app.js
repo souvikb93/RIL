@@ -46,21 +46,22 @@ const SLIDERS = [
   { key: 'demand', label: 'Electricity demand', unit: '% of today', min: 50, max: 200, step: 5, color: 'var(--navy)' },
 ];
 
-// Every selectable option is listed; unbuilt ones are visible but disabled.
+// Three per category; unbuilt ones stay visible but disabled.
 const METRICS = [
   { group: 'Energy', items: [
-    { key: 'share', label: 'Renewable share of demand', unit: '%', breaks: [25, 50, 75, 100], d: 0 },
-    { key: 'gen', label: 'Renewable generation', unit: 'GWh', breaks: [100, 500, 1000, 1500], d: 0 },
-    { key: 'battery', label: 'Battery storage', soon: true },
+    { key: 'share', label: 'Renewable share', unit: '%', breaks: [25, 50, 75, 100], d: 0, desc: 'Share of electricity use covered by wind and solar.' },
+    { key: 'gen', label: 'Generation', unit: 'GWh', breaks: [100, 500, 1000, 1500], d: 0, desc: 'Electricity from wind and solar per year.' },
+    { key: 'mw', label: 'Installed capacity', unit: 'MW', breaks: [100, 300, 600, 900], d: 0, desc: 'Wind and solar capacity in place.' },
   ] },
   { group: 'Land', items: [
-    { key: 'windLand', label: 'Land used for wind', unit: '%', breaks: [0.25, 0.5, 1, 2.2], d: 2 },
-    { key: 'pvLand', label: 'Land used for solar', unit: '%', breaks: [0.05, 0.1, 0.2, 0.4], d: 2 },
+    { key: 'windLand', label: 'Land for wind', unit: '%', breaks: [0.25, 0.5, 1, 2.2], d: 2, desc: 'Share of the area used by wind turbines.' },
+    { key: 'windTarget', label: 'Progress to wind target', unit: '%', breaks: [25, 50, 75, 100], d: 0, desc: 'How far along the 2.2 % land target is.' },
+    { key: 'pvLand', label: 'Land for solar', unit: '%', breaks: [0.05, 0.1, 0.2, 0.4], d: 2, desc: 'Share of the area used by ground-mounted solar.' },
   ] },
   { group: 'Demand', items: [
-    { key: 'demand', label: 'Electricity demand', unit: 'GWh', breaks: [250, 500, 1000, 1500], d: 0 },
-    { key: 'perCap', label: 'Demand per inhabitant', unit: 'kWh', breaks: [4000, 6000, 8000, 10000], d: 0 },
-    { key: 'heat', label: 'Heat demand', soon: true },
+    { key: 'demand', label: 'Electricity demand', unit: 'GWh', breaks: [250, 500, 1000, 1500], d: 0, desc: 'Electricity used per year, incl. industry.' },
+    { key: 'perCap', label: 'Per inhabitant', unit: 'kWh', breaks: [4000, 6000, 8000, 10000], d: 0, desc: 'Electricity use divided by population.' },
+    { key: 'heat', label: 'Heat demand', soon: true, desc: 'Coming with heat-sector data.' },
   ] },
 ];
 const METRIC = Object.fromEntries(METRICS.flatMap((g) => g.items).map((m) => [m.key, m]));
@@ -120,13 +121,17 @@ function districtMetric(d, ha, key) {
     case 'gen': return gen;
     case 'windLand': return d.wind * ASSUME.haPerMwWind / ha * 100;
     case 'pvLand': return d.ff * ASSUME.haPerMwpPV / ha * 100;
+    case 'mw': return d.wind + d.ff + d.roof;
+    case 'windTarget': return d.wind * ASSUME.haPerMwWind / ha * 100 / ASSUME.windAreaTargetPct * 100;
     case 'demand': return d.demand;
     case 'perCap': return d.demand * 1e6 / d.pop;
   }
 }
 function regionMetric(key) {
   const r = compute(SCENARIOS.heute);
-  return { share: r.share, gen: r.gen, windLand: r.windPct, pvLand: r.pvPct, demand: r.demand,
+  const t = SCENARIOS.heute;
+  return { share: r.share, gen: r.gen, mw: t.wind + t.ff + t.roof, windLand: r.windPct, pvLand: r.pvPct,
+    windTarget: r.windPct / ASSUME.windAreaTargetPct * 100, demand: r.demand,
     perCap: r.demand * 1e6 / sumD('pop') }[key];
 }
 
@@ -214,53 +219,172 @@ function allocate(v) {
 
 /* ---------- KPI cards (always present) ---------- */
 const isTodayLike = () => state.mode === 'today' || state.mode === 'home';
-function pill(d, unit, digits = 0, prefix = '') {
-  if (isTodayLike()) return '';
-  if (Math.abs(d) < 1e-9) return '<span class="pill">same as today</span>';
-  return `<span class="pill" title="Change vs today">${d > 0 ? '▲' : '▼'} ${prefix}${fmt(Math.abs(d), digits)}${unit}</span>`;
+
+// One shape for every card: label · change badge / value / bar (today tick, target) / note.
+const KPI_CARDS = [
+  { id: 'share', label: 'Renewable share', dot: 'var(--navy)', v: (r) => r.share, show: (v) => [fmt(v), '%'],
+    max: 200, target: 100, d: 0, unit: ' pts', note: 'of electricity demand · target 100 %' },
+  { id: 'turbines', label: 'Wind turbines', dot: 'var(--wind)', v: (r) => r.turbines, show: (v) => [`≈ ${fmt(v)}`, ''],
+    max: 620, d: 0, unit: '', note: 'as 6.5 MW equivalents' },
+  { id: 'land', label: 'Land for wind', dot: 'var(--wind)', v: (r) => r.windPct, show: (v) => [fmt(v, 2), '%'],
+    max: 3.3, target: 2.2, d: 2, unit: ' pts', note: 'of the region · target 2.2 %' },
+  { id: 'eeg', label: 'For municipalities', dot: 'var(--navy)', v: (r) => r.eeg / 1e6, show: (v) => [`€${fmt(v, 1)}m`, '/ year'],
+    max: 27, d: 1, unit: 'm', pre: '€', note: '§ 6 EEG payments' },
+];
+const kpiShown = {};   // last value per card, for count-up
+
+function buildKpis() {
+  $('#kpis').innerHTML = `
+    <button type="button" class="kcard ctx" data-goto="plan-start" aria-label="Change scenario">
+      <span class="khead"><span class="klabel">Showing</span><span class="pill ghost">·</span></span>
+      <span class="kval" id="k-ctx"></span>
+      <span class="kmeter ctx-meter" aria-hidden="true"><span id="k-ctx-bar"></span></span>
+      <span class="ksub" id="k-ctx-sub"></span>
+    </button>
+    ${KPI_CARDS.map((c) => `
+    <button type="button" class="kcard" data-k="${c.id}" aria-expanded="false" aria-controls="kdrawer">
+      <span class="khead"><span class="klabel"><i style="background:${c.dot}"></i>${c.label}</span><span class="pill" id="k-${c.id}-pill"></span></span>
+      <span class="kval"><span id="k-${c.id}-val"></span> <small id="k-${c.id}-unit"></small></span>
+      <span class="kmeter"><span class="fill" id="k-${c.id}-bar" style="background:${c.dot}"></span>
+        <i class="today-tick" id="k-${c.id}-tick" title="Today"></i>${c.target ? `<i class="target" style="left:${c.target / c.max * 100}%" title="Target"></i>` : ''}</span>
+      <span class="ksub">${c.note}</span>
+      <span class="kmore" aria-hidden="true">Details</span>
+    </button>`).join('')}`;
+  $('#kpis').addEventListener('click', (e) => {
+    const card = e.target.closest('.kcard[data-k]'); if (!card) return;
+    openDrawer(state.drawer === card.dataset.k ? null : card.dataset.k);
+  });
+}
+
+function tween(el, from, to, show, ms = 320) {
+  cancelAnimationFrame(el._raf);
+  const t0 = performance.now();
+  const step = (t) => {
+    const k = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - k, 3);
+    el.textContent = show(from + (to - from) * e)[0];
+    if (k < 1) el._raf = requestAnimationFrame(step);
+  };
+  el._raf = requestAnimationFrame(step);
 }
 
 function renderKpis(r, base) {
   const today = isTodayLike();
   const v = today ? base : r;
-  const landTarget = ASSUME.windAreaTargetPct;
-  $('#kpis').innerHTML = `
-    <div class="kcard ctx">
-      <span class="klabel">Showing</span>
-      <span class="kval">${today ? 'Today' : SCENARIOS[state.scenario].label}</span>
-      <span class="ksub">${today ? 'current estimate' : 'scenario · <button type="button" data-goto="plan-start">change</button>'}</span>
-    </div>
-    <div class="kcard">
-      <div class="khead"><span class="klabel"><i style="background:var(--navy)"></i>Renewable share</span>${pill(r.share - base.share, ' pts')}</div>
-      <span class="kval">${fmt(v.share)} %</span>
-      <div class="kmeter"><span style="width:${Math.min(v.share, 200) / 2}%;background:var(--navy)"></span><i class="target" style="left:50%"></i></div>
-      <span class="ksub">of electricity demand · target 100 %</span>
-    </div>
-    <div class="kcard">
-      <div class="khead"><span class="klabel"><i style="background:var(--wind)"></i>Wind turbines</span>${pill(r.turbines - base.turbines, '')}</div>
-      <span class="kval">≈ ${fmt(v.turbines)}</span>
-      <span class="ksub">6.5 MW equivalents · ${fmt(v.windGWh / 1000, 1)} TWh/yr</span>
-    </div>
-    <div class="kcard">
-      <div class="khead"><span class="klabel"><i style="background:var(--wind)"></i>Land for wind</span>${pill(r.windPct - base.windPct, ' pts', 2)}</div>
-      <span class="kval">${fmt(v.windPct, 2)} %</span>
-      <div class="kmeter"><span style="width:${Math.min(v.windPct / (landTarget * 1.5), 1) * 100}%;background:var(--wind)"></span><i class="target" style="left:${100 / 1.5}%"></i></div>
-      <span class="ksub">of the region · target ${fmt(landTarget, 1)} %</span>
-    </div>
-    <div class="kcard">
-      <div class="khead"><span class="klabel"><i style="background:var(--navy)"></i>For municipalities</span>${pill((r.eeg - base.eeg) / 1e6, 'm', 1, '€')}</div>
-      <span class="kval">${eur(v.eeg)} <small>/ year</small></span>
-      <span class="ksub">§ 6 EEG payments from wind &amp; solar</span>
-    </div>`;
+  $('#k-ctx').textContent = today ? 'Today' : SCENARIOS[state.scenario].label;
+  $('#k-ctx-sub').textContent = today ? 'current estimate' : 'scenario · click to change';
+  $('#k-ctx-bar').style.width = `${{ heute: 25, bb30: 50, bb40: 75, eigen: 100 }[today ? 'heute' : state.scenario]}%`;
+
+  KPI_CARDS.forEach((c) => {
+    const now = c.v(v), then = c.v(base);
+    const valEl = $(`#k-${c.id}-val`);
+    const prev = kpiShown[c.id] ?? now;
+    if (Math.abs(prev - now) > 1e-9) tween(valEl, prev, now, c.show); else valEl.textContent = c.show(now)[0];
+    kpiShown[c.id] = now;
+    $(`#k-${c.id}-unit`).textContent = c.show(now)[1];
+    $(`#k-${c.id}-bar`).style.width = `${Math.min(now / c.max, 1) * 100}%`;
+    const tick = $(`#k-${c.id}-tick`);
+    tick.style.left = `${Math.min(then / c.max, 1) * 100}%`;
+    tick.hidden = today;
+    const p = $(`#k-${c.id}-pill`), d = now - then;
+    const txt = today ? '·' : Math.abs(d) < 1e-9 ? 'same as today' : `${d > 0 ? '▲' : '▼'} ${c.pre || ''}${fmt(Math.abs(d), c.d)}${c.unit}`;
+    if (p.textContent !== txt) { p.textContent = txt; p.classList.remove('pop'); void p.offsetWidth; p.classList.add('pop'); }
+    p.classList.toggle('ghost', today);
+  });
+  if (state.drawer) renderDrawer(r, base);
+}
+
+/* ---------- KPI detail drawer ---------- */
+function openDrawer(id) {
+  state.drawer = id;
+  document.querySelectorAll('.kcard[data-k]').forEach((c) => {
+    c.classList.toggle('active', c.dataset.k === id);
+    c.setAttribute('aria-expanded', String(c.dataset.k === id));
+  });
+  $('#kdrawer').classList.toggle('open', !!id);
+  $('#kdrawer').setAttribute('aria-hidden', String(!id));
+  if (id) { update(); $('#kdrawerClose').focus({ preventScroll: true }); }
+}
+
+function renderDrawer(r, base) {
+  const today = isTodayLike();
+  const v = today ? base : r;
+  const ctx = today ? 'Today' : SCENARIOS[state.scenario].label;
+  const bar = (label, val, max, color, txt) => `<div class="dline"><span>${label}</span>
+    <span class="dtrack"><span style="width:${Math.min(val / max, 1) * 100}%;background:${color}"></span></span><b>${txt}</b></div>`;
+  const cmp = (label, a, b) => `<dt>${label}</dt><dd>${a}${today ? '' : ` <small>today ${b}</small>`}</dd>`;
+  let title = '', body = '';
+  switch (state.drawer) {
+    case 'share': {
+      const max = Math.max(v.gen, v.demand);
+      title = 'Renewable share';
+      body = `<p class="dlead"><b>${fmt(v.share)} %</b> of the electricity used in the region is generated by wind and solar here (${ctx}).</p>
+        <h4>Generation vs. demand (GWh / year)</h4>
+        ${bar('Wind', v.windGWh, max, 'var(--wind)', fmt(v.windGWh))}
+        ${bar('Ground solar', v.ffGWh, max, 'var(--solar)', fmt(v.ffGWh))}
+        ${bar('Rooftop solar', v.roofGWh, max, 'var(--solar-roof)', fmt(v.roofGWh))}
+        ${bar('Demand', v.demand, max, 'var(--s4)', fmt(v.demand))}
+        <p class="dnote">Above 100 % means the region produces more than it uses over the year, not in every hour. Storage and the grid balance the rest.</p>`;
+      break;
+    }
+    case 'turbines':
+      title = 'Wind turbines';
+      body = `<p class="dlead"><b>≈ ${fmt(v.turbines)} turbines</b>${today ? '' : `, ${fmt(Math.max(0, r.turbines - base.turbines))} more than today`}.</p>
+        <dl class="kv">${cmp('Capacity', `${fmt(state.mode === 'today' || state.mode === 'home' ? SCENARIOS.heute.wind : state.wind)} MW`, `${fmt(SCENARIOS.heute.wind)} MW`)}
+        ${cmp('Electricity', `${fmt(v.windGWh / 1000, 1)} TWh/yr`, `${fmt(base.windGWh / 1000, 1)} TWh`)}
+        <dt>Per turbine</dt><dd>${fmt(ASSUME.mwPerTurbine, 1)} MW · ${fmt(ASSUME.mwPerTurbine * ASSUME.flhWind / 1000, 1)} GWh/yr</dd></dl>
+        <p class="dnote">Counted as modern 6.5 MW turbines. Many older turbines today are smaller, so the real count is higher.</p>
+        <button type="button" class="btn secondary block" data-layer-on="potential">Show land suitable for wind</button>`;
+      break;
+    case 'land': {
+      const targetHa = geo.regionHa * ASSUME.windAreaTargetPct / 100;
+      title = 'Land for wind';
+      body = `<p class="dlead"><b>${fmt(v.windPct, 2)} %</b> of the region, ${fmt(v.windHa)} ha. The 2032 target is ${fmt(ASSUME.windAreaTargetPct, 1)} % (${fmt(targetHa)} ha).</p>
+        <h4>Progress to target</h4>
+        ${bar('Wind land', v.windHa, targetHa, 'var(--wind)', `${fmt(v.windHa / targetHa * 100)} %`)}
+        <dl class="kv">${cmp('Wind land', `${fmt(v.windHa)} ha`, `${fmt(base.windHa)} ha`)}
+        ${cmp('Solar land', `${fmt(v.pvHa)} ha`, `${fmt(base.pvHa)} ha`)}
+        <dt>Suitable for wind (demo)</dt><dd>${fmt(geo.windOrder.length * geo.cellHa)} ha</dd></dl>
+        <button type="button" class="btn secondary block" data-layer-on="potential">Show land suitable for wind</button>`;
+      break;
+    }
+    case 'eeg': {
+      const perTurbine = ASSUME.mwPerTurbine * ASSUME.flhWind * 1000 * ASSUME.eegEurPerKwh;
+      title = 'Income for municipalities';
+      body = `<p class="dlead"><b>${eur(v.eeg)} a year</b> if all operators pay the voluntary § 6 EEG share of 0.2 ct/kWh.</p>
+        <dl class="kv">${cmp('From wind', eur(v.windGWh * 1e6 * ASSUME.eegEurPerKwh), eur(base.windGWh * 1e6 * ASSUME.eegEurPerKwh))}
+        ${cmp('From ground solar', eur(v.ffGWh * 1e6 * ASSUME.eegEurPerKwh), eur(base.ffGWh * 1e6 * ASSUME.eegEurPerKwh))}
+        <dt>One turbine</dt><dd>≈ ${eur(perTurbine)} / year</dd></dl>
+        <p class="dnote">Wind payments go to all municipalities within 2.5 km of a turbine. Rooftop solar doesn't count.</p>
+        <button type="button" class="btn secondary block" data-goto="place">Check a town</button>`;
+      break;
+    }
+  }
+  $('#kdrawerTitle').textContent = title;
+  $('#kdrawerCtx').textContent = ctx;
+  $('#kdrawerBody').innerHTML = body;
+}
+
+function buildDrawer() {
+  $('#kdrawerClose').addEventListener('click', () => openDrawer(null));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && state.drawer) openDrawer(null); });
+  $('#kdrawerBody').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-layer-on]'); if (!b) return;
+    state.layers.add(b.dataset.layerOn);
+    const cb = document.querySelector(`[data-layer="${b.dataset.layerOn}"]`); if (cb) cb.checked = true;
+    update();
+  });
 }
 
 /* ---------- Today ---------- */
+const catOf = (key) => METRICS.find((g) => g.items.some((m) => m.key === key)).group;
+
 function buildToday() {
-  $('#metricList').innerHTML = METRICS.map((g) => `<div class="mgroup"><span>${g.group}</span>${g.items.map((m) =>
-    m.soon
-      ? `<button type="button" class="mopt" disabled>${m.label}<span class="soon">soon</span></button>`
-      : `<button type="button" class="mopt" role="radio" data-m="${m.key}">${m.label}<em>${fmt(regionMetric(m.key), m.d)} ${m.unit}</em></button>`,
-  ).join('')}</div>`).join('');
+  $('#catTabs').innerHTML = METRICS.map((g) => `<button type="button" role="tab" data-cat="${g.group}">${g.group}</button>`).join('');
+  $('#catTabs').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-cat]'); if (!b) return;
+    state.metric = METRICS.find((g) => g.group === b.dataset.cat).items[0].key;
+    update();
+  });
   $('#metricList').addEventListener('click', (e) => {
     const b = e.target.closest('.mopt[data-m]'); if (!b) return;
     state.metric = b.dataset.m;
@@ -269,6 +393,15 @@ function buildToday() {
 }
 
 function renderToday(base) {
+  const cat = catOf(state.metric);
+  $('#catTabs').querySelectorAll('[data-cat]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.cat === cat)));
+  const group = METRICS.find((g) => g.group === cat);
+  if ($('#metricList').dataset.cat !== cat) {
+    $('#metricList').dataset.cat = cat;
+    $('#metricList').innerHTML = group.items.map((m) => m.soon
+      ? `<button type="button" class="mopt" disabled><span class="mtxt"><b>${m.label}</b><span>${m.desc}</span></span><span class="soon">soon</span></button>`
+      : `<button type="button" class="mopt" role="radio" data-m="${m.key}"><span class="mtxt"><b>${m.label}</b><span>${m.desc}</span></span><em>${fmt(regionMetric(m.key), m.d)} ${m.unit}</em></button>`).join('');
+  }
   $('#metricList').querySelectorAll('.mopt[data-m]').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.m === state.metric)));
   const m = METRIC[state.metric];
   const rows = geo.region.features.map((f) => ({
@@ -678,6 +811,7 @@ function syncMap() {
 /* ---------- Mode + update loop ---------- */
 function setMode(mode) {
   state.mode = mode;
+  $('#welcome').hidden = mode !== 'home';
   document.querySelectorAll('.view').forEach((v) => v.classList.toggle('active', v.dataset.view === mode));
   $('#panel').scrollTop = 0;
   if (isTodayLike() && map?.loaded()) map.fitBounds(turf.bbox(geo.region), { ...FIT, duration: 600 });
@@ -729,6 +863,8 @@ function buildUser() {
   let name = 'Guest';
   try { name = sessionStorage.getItem('empower.user') || 'Guest'; } catch { /* private mode */ }
   $('#userName').textContent = name;
+  const first = name.charAt(0).toUpperCase() + name.slice(1);
+  $('#wTitle').textContent = name === 'Guest' ? 'Welcome to EmPower' : `Hi ${first}, welcome back`;
   $('#avatar').textContent = name[0];
   const btn = $('#userBtn'), menu = $('#userMenu');
   btn.addEventListener('click', (e) => {
@@ -751,6 +887,11 @@ function buildUser() {
   ]);
   prepareGeo(bb, places);
   readHash();
+  buildKpis();
+  buildDrawer();
+  $('#wsToday').textContent = `${fmt(compute(SCENARIOS.heute).share)} %`;
+  $('#wsPlan').textContent = `${fmt(compute(SCENARIOS.bb30).share)} %`;
+  $('#wsPlace').textContent = fmt(geo.places.filter((p) => p.r).length);
   buildToday();
   buildPlan();
   buildPlace();

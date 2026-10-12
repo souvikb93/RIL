@@ -28,36 +28,52 @@
     </div>
   </header>
 
+
+  <!-- Welcome: three topics, pick one -->
+  <section class="welcome" id="welcome" aria-labelledby="wTitle">
+    <div class="welcome-inner">
+      <header class="welcome-hd">
+        <h1 id="wTitle">Welcome</h1>
+        <p>What do you want to find out about wind and solar in Oderland-Spree?</p>
+      </header>
+      <div class="wcards">
+        <article class="wcard" style="--i:0">
+          <span class="wkicker">Today</span>
+          <h2>Where do we stand?</h2>
+          <p class="wlead">See how far the region has already come.</p>
+          <div class="wstat"><b id="wsToday"></b><span>renewable share of electricity today</span></div>
+          <ul><li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Renewable share, generation and capacity by district</span></li><li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Land used for wind and solar against the 2.2 % target</span></li><li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Electricity demand in total and per inhabitant</span></li></ul>
+          <button type="button" class="btn primary block" data-goto="today">Explore today</button>
+        </article>
+        <article class="wcard" style="--i:1">
+          <span class="wkicker">Plan</span>
+          <h2>What if we build more?</h2>
+          <p class="wlead">Test the state targets or your own mix.</p>
+          <div class="wstat"><b id="wsPlan"></b><span>renewable share with the BB 2030 targets</span></div>
+          <ul><li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Start from BB 2030, BB 2040 or your own numbers</span></li><li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Adjust wind and solar, results update instantly</span></li><li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>See where new turbines and solar parks could go</span></li></ul>
+          <button type="button" class="btn primary block" data-goto="plan-start">Start planning</button>
+        </article>
+        <article class="wcard" style="--i:2">
+          <span class="wkicker">My place</span>
+          <h2>What does it mean here?</h2>
+          <p class="wlead">Zoom in on one town or village.</p>
+          <div class="wstat"><b id="wsPlace"></b><span>towns and villages to check</span></div>
+          <ul><li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Distance to the nearest wind area</span></li><li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Number of turbines within 2.5 km</span></li><li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Yearly § 6 EEG income for the municipality</span></li></ul>
+          <button type="button" class="btn primary block" data-goto="place">Check a town</button>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <main class="layout">
     <aside class="panel" id="panel">
 
-      <!-- Questions -->
-      <section class="view" data-view="home">
-        <h2 class="view-title">What do you want to find out?</h2>
-        <div class="choices">
-          <button type="button" class="choice" data-goto="today">
-            <span class="choice-k">Today</span>
-            <b>Where do we stand?</b>
-            <span class="choice-d">Renewable share, land and demand by district.</span>
-          </button>
-          <button type="button" class="choice" data-goto="plan-start">
-            <span class="choice-k">Plan</span>
-            <b>What if we build more?</b>
-            <span class="choice-d">Pick a target, adjust wind and solar, see the effect live.</span>
-          </button>
-          <button type="button" class="choice" data-goto="place">
-            <span class="choice-k">My place</span>
-            <b>What does it mean here?</b>
-            <span class="choice-d">Distance to turbines and income for one town.</span>
-          </button>
-        </div>
-      </section>
-
       <!-- TODAY -->
       <section class="view" data-view="today">
-        <div class="view-hd"><button type="button" class="back" data-goto="home">All questions</button><h2>Where do we stand?</h2></div>
+        <div class="view-hd"><button type="button" class="back" data-goto="home">All topics</button><h2>Where do we stand?</h2></div>
         <div class="block">
           <h3>Show on map</h3>
+          <div class="tabs" id="catTabs" role="tablist" aria-label="Topic"></div>
           <div id="metricList" role="radiogroup" aria-label="Map metric"></div>
         </div>
         <details class="more">
@@ -69,7 +85,7 @@
       <!-- PLAN, screen 1: pick a starting point -->
       <section class="view" data-view="plan-start">
         <div class="view-hd">
-          <button type="button" class="back" data-goto="home">All questions</button>
+          <button type="button" class="back" data-goto="home">All topics</button>
           <h2>What if we build more?</h2>
           <p class="view-sub">Pick a starting point. You can fine-tune it next.</p>
         </div>
@@ -100,7 +116,7 @@
 
       <!-- MY PLACE -->
       <section class="view" data-view="place">
-        <div class="view-hd"><button type="button" class="back" data-goto="home">All questions</button><h2>What does it mean here?</h2></div>
+        <div class="view-hd"><button type="button" class="back" data-goto="home">All topics</button><h2>What does it mean here?</h2></div>
         <div class="block">
           <h3 id="placeLabel">Town or village</h3>
           <div class="combo" id="placeCombo">
@@ -133,6 +149,13 @@
           <div class="layers-pop" id="layersPop" hidden></div>
         </div>
         <div class="legend" id="legend"></div>
+        <aside class="kdrawer" id="kdrawer" aria-hidden="true" aria-labelledby="kdrawerTitle">
+          <div class="kdrawer-hd">
+            <div><span class="kdrawer-ctx" id="kdrawerCtx"></span><h3 id="kdrawerTitle"></h3></div>
+            <button type="button" class="kdrawer-close" id="kdrawerClose">Close</button>
+          </div>
+          <div class="kdrawer-body" id="kdrawerBody"></div>
+        </aside>
       </div>
     </section>
   </main>
