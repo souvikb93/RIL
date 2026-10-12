@@ -26,9 +26,11 @@
 }
 .auth-card { width: 100%; max-width: 420px; }
 
-.auth-brand { display: flex; align-items: center; gap: 14px; margin-bottom: clamp(28px, 4.5vh, 48px); }
-.auth-brand .mark { width: 48px; height: 48px; border-radius: 10px; }
-.auth-brand-name { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; color: var(--navy); }
+.auth-brand { display: flex; align-items: center; gap: 14px; margin-bottom: clamp(32px, 5vh, 56px); }
+.auth-brand .mark { width: 52px; height: 52px; border-radius: 12px; }
+.auth-brand .mark img { height: 36px; width: auto; display: block; }
+/* line-height 1 so the wordmark's cap height centres on the mark, not its line box */
+.auth-brand-name { font-size: 34px; line-height: 1; font-weight: 700; letter-spacing: -0.025em; color: var(--navy); }
 
 .auth-title { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 6px; color: var(--ink); }
 .auth-sub { font-size: 15px; color: var(--muted); margin: 0 0 clamp(28px, 4.5vh, 48px); }

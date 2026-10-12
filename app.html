@@ -30,14 +30,8 @@
 
   <main class="layout">
     <aside class="panel" id="panel">
-      <!-- Progress: 1 choose a question → 2 explore it -->
-      <ol class="stepper" aria-label="Progress">
-        <li id="step1"><span>1</span>Choose a question</li>
-        <li class="bar" aria-hidden="true"></li>
-        <li id="step2"><span>2</span><em id="step2Label">Explore</em></li>
-      </ol>
 
-      <!-- STEP 1 -->
+      <!-- Questions -->
       <section class="view" data-view="home">
         <h2 class="view-title">What do you want to find out?</h2>
         <div class="choices">
@@ -46,7 +40,7 @@
             <b>Where do we stand?</b>
             <span class="choice-d">Renewable share, land and demand by district.</span>
           </button>
-          <button type="button" class="choice" data-goto="plan">
+          <button type="button" class="choice" data-goto="plan-start">
             <span class="choice-k">Plan</span>
             <b>What if we build more?</b>
             <span class="choice-d">Pick a target, adjust wind and solar, see the effect live.</span>
@@ -59,7 +53,7 @@
         </div>
       </section>
 
-      <!-- STEP 2: TODAY -->
+      <!-- TODAY -->
       <section class="view" data-view="today">
         <div class="view-hd"><button type="button" class="back" data-goto="home">All questions</button><h2>Where do we stand?</h2></div>
         <div class="block">
@@ -72,13 +66,22 @@
         </details>
       </section>
 
-      <!-- STEP 2: PLAN -->
+      <!-- PLAN, screen 1: pick a starting point -->
+      <section class="view" data-view="plan-start">
+        <div class="view-hd">
+          <button type="button" class="back" data-goto="home">All questions</button>
+          <h2>What if we build more?</h2>
+          <p class="view-sub">Pick a starting point. You can fine-tune it next.</p>
+        </div>
+        <div class="choices" id="startList"></div>
+      </section>
+
+      <!-- PLAN, screen 2: adjust -->
       <section class="view" data-view="plan">
-        <div class="view-hd"><button type="button" class="back" data-goto="home">All questions</button><h2>What if we build more?</h2></div>
-        <div class="block">
-          <h3>Start from</h3>
-          <div class="seg" role="radiogroup" aria-label="Scenario" id="seg"></div>
-          <p class="note" id="scenarioNote"></p>
+        <div class="view-hd">
+          <button type="button" class="back" data-goto="plan-start">Starting point</button>
+          <h2 id="planTitle"></h2>
+          <p class="view-sub" id="scenarioNote"></p>
         </div>
         <div class="block">
           <h3>Build more</h3>
@@ -95,7 +98,7 @@
         </details>
       </section>
 
-      <!-- STEP 2: MY PLACE -->
+      <!-- MY PLACE -->
       <section class="view" data-view="place">
         <div class="view-hd"><button type="button" class="back" data-goto="home">All questions</button><h2>What does it mean here?</h2></div>
         <div class="block">
@@ -103,6 +106,9 @@
           <div class="combo" id="placeCombo">
             <input type="text" id="placeInput" role="combobox" aria-labelledby="placeLabel" aria-expanded="false"
                    aria-controls="placeList" aria-autocomplete="list" placeholder="Search 266 places…" autocomplete="off">
+            <button type="button" class="combo-clear" id="placeClear" aria-label="Clear town" hidden>
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
             <svg class="combo-chev" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <ul class="combo-list" id="placeList" role="listbox" hidden></ul>
           </div>

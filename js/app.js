@@ -228,7 +228,7 @@ function renderKpis(r, base) {
     <div class="kcard ctx">
       <span class="klabel">Showing</span>
       <span class="kval">${today ? 'Today' : SCENARIOS[state.scenario].label}</span>
-      <span class="ksub">${today ? 'current estimate' : 'scenario · <button type="button" data-goto="plan">change</button>'}</span>
+      <span class="ksub">${today ? 'current estimate' : 'scenario · <button type="button" data-goto="plan-start">change</button>'}</span>
     </div>
     <div class="kcard">
       <div class="khead"><span class="klabel"><i style="background:var(--navy)"></i>Renewable share</span>${pill(r.share - base.share, ' pts')}</div>
@@ -304,11 +304,22 @@ function renderToday(base) {
 
 /* ---------- Plan ---------- */
 function buildPlan() {
-  $('#seg').innerHTML = Object.entries(SCENARIOS).map(([k, s]) =>
-    `<button type="button" role="radio" data-k="${k}"${k === 'eigen' ? ' class="custom" tabindex="-1"' : ''}>${s.label}<small>${s.short}</small></button>`).join('');
-  $('#seg').addEventListener('click', (e) => {
-    const b = e.target.closest('button'); if (!b || b.dataset.k === 'eigen') return;
-    applyPreset(b.dataset.k);
+  const nums = (s) => `<span class="nums"><span><i style="background:var(--wind)"></i>${fmt(s.wind)} MW wind</span>`
+    + `<span><i style="background:var(--solar)"></i>${fmt(s.ff + s.roof)} MWp solar</span></span>`;
+  $('#startList').innerHTML = ['heute', 'bb30', 'bb40', 'eigen'].map((k) => {
+    const s = SCENARIOS[k];
+    return `<button type="button" class="choice" data-start="${k}">
+      <span class="choice-k">${s.short}</span><b>${k === 'eigen' ? 'Custom' : s.label}</b>
+      <span class="choice-d">${k === 'eigen' ? 'Set wind and solar yourself, starting from your current settings.' : s.note}</span>
+      ${k === 'eigen' ? '' : nums(s)}
+    </button>`;
+  }).join('');
+  $('#startList').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-start]'); if (!b) return;
+    const k = b.dataset.start;
+    if (k === 'eigen') state.customising = true;
+    else { state.customising = false; Object.assign(state, pick(SCENARIOS[k])); state.scenario = k; state.lastPreset = k; }
+    setMode('plan');
   });
   $('#scenarioNote').addEventListener('click', (e) => {
     if (e.target.matches('[data-reset]')) applyPreset(state.lastPreset);
@@ -358,6 +369,7 @@ function applyPreset(k) {
   Object.assign(state, pick(SCENARIOS[k]));
   state.scenario = k;
   state.lastPreset = k;
+  state.customising = false;
   update();
 }
 
@@ -379,10 +391,12 @@ function plain(key, v, r) {
 }
 
 function renderPlan(r, base, alloc) {
-  $('#seg').querySelectorAll('button').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.k === state.scenario)));
-  $('#scenarioNote').innerHTML = state.scenario === 'eigen'
-    ? `Your own settings. <button type="button" data-reset>Back to ${SCENARIOS[state.lastPreset].label}</button>`
-    : SCENARIOS[state.scenario].note;
+  const own = state.scenario === 'eigen';
+  $('#startList').querySelectorAll('[data-start]').forEach((b) => b.setAttribute('aria-current', String(b.dataset.start === state.scenario)));
+  $('#planTitle').textContent = own ? 'Your own scenario' : `Starting from ${SCENARIOS[state.scenario].label}`;
+  $('#scenarioNote').innerHTML = own
+    ? `Built on ${SCENARIOS[state.lastPreset].label}. <button type="button" data-reset>Reset to ${SCENARIOS[state.lastPreset].label}</button>`
+    : state.customising ? 'Move the sliders to make it your own.' : 'Move the sliders to see what changes.';
 
   SLIDERS.forEach((s) => {
     const el = $(`#sl-${s.key}`);
@@ -415,7 +429,7 @@ function bearing(ax, ay, bx, by) {
 
 function renderPlace() {
   const c = state.check;
-  const scen = `Based on <b>${SCENARIOS[state.scenario].label}</b>. <button type="button" data-goto="plan">Change scenario</button>`;
+  const scen = `Based on <b>${SCENARIOS[state.scenario].label}</b>. <button type="button" data-goto="plan-start">Change scenario</button>`;
   if (!c) {
     $('#placeOut').innerHTML = `<p class="note">${scen}</p>`;
     return;
@@ -478,9 +492,10 @@ function buildPlace() {
   let shown = [], hl = -1;
 
   const esc = (t) => t.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  let typed = false; // until the user types, show the full list even if a town is selected
   function render() {
-    const q = input.value.trim().toLowerCase();
-    shown = all.filter((p) => !q || p.n.toLowerCase().includes(q)).slice(0, 80);
+    const q = typed ? input.value.trim().toLowerCase() : '';
+    shown = all.filter((p) => !q || p.n.toLowerCase().includes(q));
     hl = shown.length ? 0 : -1;
     if (!shown.length) { list.innerHTML = '<li class="none">No place found</li>'; return; }
     let html = '', grp = null;
@@ -488,15 +503,20 @@ function buildPlace() {
       const g = p.t === 'v' ? 'Villages' : 'Towns';
       if (g !== grp) { html += `<li class="grp" role="presentation">${g}</li>`; grp = g; }
       const name = q ? esc(p.n).replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'i'), '<mark>$1</mark>') : esc(p.n);
-      html += `<li class="opt${k === hl ? ' hl' : ''}" role="option" id="po-${k}" data-k="${k}">${name}${p.p ? `<small>${fmt(p.p)} inh.</small>` : ''}</li>`;
+      const cur = state.check?.name === p.n;
+      if (cur && !q) hl = k;
+      html += `<li class="opt${k === hl ? ' hl' : ''}${cur ? ' current' : ''}" role="option" aria-selected="${cur}" id="po-${k}" data-k="${k}">${name}${p.p ? `<small>${fmt(p.p)} inh.</small>` : ''}</li>`;
     });
     list.innerHTML = html;
+    list.querySelectorAll('.opt').forEach((o) => o.classList.toggle('hl', +o.dataset.k === hl));
+    $(`#po-${hl}`)?.scrollIntoView({ block: 'nearest' });
     input.setAttribute('aria-activedescendant', hl >= 0 ? `po-${hl}` : '');
   }
   function open() { render(); list.hidden = false; combo.classList.add('open'); input.setAttribute('aria-expanded', 'true'); }
   function close() { list.hidden = true; combo.classList.remove('open'); input.setAttribute('aria-expanded', 'false'); }
   function choose(k) {
     const p = shown[k]; if (!p) return;
+    typed = false;
     input.value = p.n; close(); input.blur();
     map.flyTo({ center: [p.x, p.y], zoom: 11, duration: 900 });
     setCheck(p.x, p.y, p.n);
@@ -508,20 +528,24 @@ function buildPlace() {
     const el = $(`#po-${hl}`); el?.scrollIntoView({ block: 'nearest' });
     input.setAttribute('aria-activedescendant', `po-${hl}`);
   }
-  input.addEventListener('focus', () => { input.select(); open(); });
-  input.addEventListener('input', open);
+  input.addEventListener('focus', () => { typed = false; input.select(); open(); });
+  input.addEventListener('click', () => { if (list.hidden) open(); });
+  input.addEventListener('input', () => { typed = true; $('#placeClear').hidden = !input.value; open(); });
+  $('#placeClear').addEventListener('click', () => {
+    typed = true; input.value = ''; $('#placeClear').hidden = true; input.focus(); open();
+  });
   input.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowDown') { e.preventDefault(); list.hidden ? open() : move(1); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); move(-1); }
     else if (e.key === 'Enter') { e.preventDefault(); choose(hl); }
-    else if (e.key === 'Escape') { close(); }
+    else if (e.key === 'Escape') { typed = false; input.value = state.check?.name || ''; close(); }
   });
   list.addEventListener('mousedown', (e) => {
     const o = e.target.closest('.opt'); if (!o) return;
     e.preventDefault(); choose(+o.dataset.k);
   });
   document.addEventListener('click', (e) => { if (!combo.contains(e.target)) close(); });
-  geo.syncPlaceInput = (name) => { input.value = name || ''; };
+  geo.syncPlaceInput = (name) => { typed = false; input.value = name || ''; $('#placeClear').hidden = !name; };
 }
 
 /* ---------- Layers + legend ---------- */
@@ -655,11 +679,6 @@ function syncMap() {
 function setMode(mode) {
   state.mode = mode;
   document.querySelectorAll('.view').forEach((v) => v.classList.toggle('active', v.dataset.view === mode));
-  const home = mode === 'home';
-  $('#step1').className = home ? 'on' : 'done';
-  $('#step2').className = home ? '' : 'on';
-  document.querySelector('.stepper .bar').classList.toggle('done', !home);
-  $('#step2Label').textContent = home ? 'Explore' : { today: 'Today', plan: 'Plan', place: 'My place' }[mode];
   $('#panel').scrollTop = 0;
   if (isTodayLike() && map?.loaded()) map.fitBounds(turf.bbox(geo.region), { ...FIT, duration: 600 });
   update();
@@ -686,7 +705,7 @@ function readHash() {
     if (p.has(k) && Number.isFinite(v)) state[key] = v;
   }
   state.scenario = matchScenario();
-  if (['home', 'today', 'plan', 'place'].includes(p.get('m'))) state.mode = p.get('m');
+  if (['home', 'today', 'plan-start', 'plan', 'place'].includes(p.get('m'))) state.mode = p.get('m');
   if (METRIC[p.get('k')] && !METRIC[p.get('k')].soon) state.metric = p.get('k');
 }
 
