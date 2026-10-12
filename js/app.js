@@ -542,6 +542,7 @@ function renderPlan(r, base, alloc) {
     el.value = state[s.key];
     el.style.setProperty('--p', `${(state[s.key] - s.min) / (s.max - s.min) * 100}%`);
     $(`#val-${s.key}`).textContent = `${fmt(state[s.key])} ${s.unit}`;
+    el.parentElement.querySelectorAll('.tick').forEach((t) => t.classList.toggle('on', +t.dataset.val === state[s.key]));
     $(`#plain-${s.key}`).textContent = plain(s.key, state, r);
   });
 
