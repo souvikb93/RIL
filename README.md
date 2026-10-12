@@ -24,7 +24,7 @@ css/app.css           app
 js/login.js           demo sign-in + Lottie loader
 js/app.js             model, map, UI
 data/                 district boundaries (GADM) + OSM settlements
-assets/               logo, login animation (LottieFiles: "Wind turbines and solar panels energy")
+assets/               logo-mark.png (white), favicon.png, login animation (LottieFiles: "Wind turbines and solar panels energy")
 DESIGN.md             colour rules, Gutenberg layout, Norman principles
 ```
 
