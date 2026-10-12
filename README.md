@@ -23,8 +23,10 @@ css/login.css         login page
 css/app.css           app
 js/login.js           demo sign-in + Lottie loader
 js/app.js             model, map, UI
+js/anim.js            micro-animation player (lottie-web)
 data/                 district boundaries (GADM) + OSM settlements
 assets/               logo-mark.png (white), favicon.png, login animation (LottieFiles: "Wind turbines and solar panels energy")
+assets/anim/          micro-animations from useanimations.com (react-useanimations, MIT; LICENSE included)
 DESIGN.md             colour rules, Gutenberg layout, Norman principles
 ```
 

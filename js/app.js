@@ -370,7 +370,8 @@ function buildDrawer() {
   $('#kdrawerBody').addEventListener('click', (e) => {
     const b = e.target.closest('[data-layer-on]'); if (!b) return;
     state.layers.add(b.dataset.layerOn);
-    const cb = document.querySelector(`[data-layer="${b.dataset.layerOn}"]`); if (cb) cb.checked = true;
+    const cb = document.querySelector(`[data-layer="${b.dataset.layerOn}"]`);
+    if (cb) { cb.checked = true; Anim.set(cb.nextElementSibling, true, false); }
     update();
   });
 }
@@ -399,10 +400,15 @@ function renderToday(base) {
   if ($('#metricList').dataset.cat !== cat) {
     $('#metricList').dataset.cat = cat;
     $('#metricList').innerHTML = group.items.map((m) => m.soon
-      ? `<button type="button" class="mopt" disabled><span class="mtxt"><b>${m.label}</b><span>${m.desc}</span></span><span class="soon">soon</span></button>`
-      : `<button type="button" class="mopt" role="radio" data-m="${m.key}"><span class="mtxt"><b>${m.label}</b><span>${m.desc}</span></span><em>${fmt(regionMetric(m.key), m.d)} ${m.unit}</em></button>`).join('');
+      ? `<button type="button" class="mopt" disabled><span class="radio radio-off" aria-hidden="true"></span><span class="mtxt"><b>${m.label}</b><span>${m.desc}</span></span><span class="soon">soon</span></button>`
+      : `<button type="button" class="mopt" role="radio" data-m="${m.key}"><span class="anim radio" data-anim="radioButton" data-on="false" aria-hidden="true"></span><span class="mtxt"><b>${m.label}</b><span>${m.desc}</span></span><em>${fmt(regionMetric(m.key), m.d)} ${m.unit}</em></button>`).join('');
   }
-  $('#metricList').querySelectorAll('.mopt[data-m]').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.m === state.metric)));
+  $('#metricList').querySelectorAll('.mopt[data-m]').forEach((b) => {
+    const on = b.dataset.m === state.metric;
+    b.setAttribute('aria-checked', String(on));
+    const r = b.querySelector('.radio');
+    Anim.mount(r).then(() => Anim.set(r, on));
+  });
   const m = METRIC[state.metric];
   const rows = geo.region.features.map((f) => ({
     name: f.properties.name, v: districtMetric(DISTRICTS[f.properties.name], f.properties.ha, m.key),
@@ -539,8 +545,13 @@ function renderPlan(r, base, alloc) {
     $(`#plain-${s.key}`).textContent = plain(s.key, state, r);
   });
 
-  $('#pWarn').innerHTML = alloc.windShort
-    ? `<div class="warn">This needs more land than the analysis rates as suitable (${fmt(alloc.windAvailHa)} ha). Distances or protection rules would have to change.</div>` : '';
+  const warn = $('#pWarn');
+  if (warn._on !== alloc.windShort) {
+    warn._on = alloc.windShort;
+    warn.innerHTML = alloc.windShort
+      ? `<div class="warn"><span class="anim warn-ico" data-anim="alertTriangle" data-color="#B80000" aria-hidden="true"></span><span>This needs more land than the analysis rates as suitable (${fmt(alloc.windAvailHa)} ha). Distances or protection rules would have to change.</span></div>` : '';
+    if (alloc.windShort) Anim.replay(warn.querySelector('.anim'));
+  }
 
   const row = (label, now, then, unit, d = 0) =>
     `<dt>${label}</dt><dd>${fmt(now, d)} ${unit} <small>(today ${fmt(then, d)})</small></dd>`;
@@ -663,9 +674,15 @@ function buildPlace() {
   }
   input.addEventListener('focus', () => { typed = false; input.select(); open(); });
   input.addEventListener('click', () => { if (list.hidden) open(); });
-  input.addEventListener('input', () => { typed = true; $('#placeClear').hidden = !input.value; open(); });
-  $('#placeClear').addEventListener('click', () => {
-    typed = true; input.value = ''; $('#placeClear').hidden = true; input.focus(); open();
+  const icon = $('#placeIcon .anim');
+  const syncIcon = () => {
+    Anim.set(icon, !!input.value);
+    $('#placeIcon').setAttribute('aria-label', input.value ? 'Clear' : 'Search places');
+  };
+  input.addEventListener('input', () => { typed = true; syncIcon(); open(); });
+  $('#placeIcon').addEventListener('click', () => {
+    if (input.value) { typed = true; input.value = ''; syncIcon(); }
+    input.focus(); open();
   });
   input.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowDown') { e.preventDefault(); list.hidden ? open() : move(1); }
@@ -678,7 +695,7 @@ function buildPlace() {
     e.preventDefault(); choose(+o.dataset.k);
   });
   document.addEventListener('click', (e) => { if (!combo.contains(e.target)) close(); });
-  geo.syncPlaceInput = (name) => { typed = false; input.value = name || ''; $('#placeClear').hidden = !name; };
+  geo.syncPlaceInput = (name) => { typed = false; input.value = name || ''; syncIcon(); };
 }
 
 /* ---------- Layers + legend ---------- */
@@ -686,7 +703,7 @@ function buildLayers() {
   $('#layersPop').innerHTML = CONTEXT_LAYERS.map((g) => `<div class="lgroup"><span>${g.group}</span>${g.items.map((l) =>
     l.soon
       ? `<label class="lopt disabled"><input type="checkbox" disabled> ${l.label}<span class="soon">soon</span></label>`
-      : `<label class="lopt"><input type="checkbox" data-layer="${l.id}"> <i class="sw" style="background:${l.color}"></i>${l.label}</label>`,
+      : `<label class="lopt"><input type="checkbox" class="vh" data-layer="${l.id}"><span class="anim cb" data-anim="checkBox" data-on="false" aria-hidden="true"></span><i class="sw" style="background:${l.color}"></i>${l.label}</label>`,
   ).join('')}</div>`).join('');
   $('#layersBtn').addEventListener('click', () => {
     const pop = $('#layersPop');
@@ -696,6 +713,7 @@ function buildLayers() {
   $('#layersPop').addEventListener('change', (e) => {
     const id = e.target.dataset.layer; if (!id) return;
     e.target.checked ? state.layers.add(id) : state.layers.delete(id);
+    Anim.set(e.target.nextElementSibling, e.target.checked);
     update();
   });
 }
@@ -784,6 +802,7 @@ function buildMap() {
 
     cellState = [];
     update();
+    $('#mapLoading').classList.add('done');
   });
 
   map.on('click', (e) => setCheck(e.lngLat.lng, e.lngLat.lat));
@@ -812,6 +831,7 @@ function syncMap() {
 function setMode(mode) {
   state.mode = mode;
   $('#welcome').hidden = mode !== 'home';
+  if (mode === 'home') document.querySelectorAll('.wcheck').forEach((el, i) => Anim.replay(el, 350 + i * 90));
   document.querySelectorAll('.view').forEach((v) => v.classList.toggle('active', v.dataset.view === mode));
   $('#panel').scrollTop = 0;
   if (isTodayLike() && map?.loaded()) map.fitBounds(turf.bbox(geo.region), { ...FIT, duration: 600 });
@@ -904,5 +924,6 @@ function buildUser() {
     setMode(g.dataset.goto);
   });
   buildMap();
+  Anim.mountAll();
   setMode(state.mode);
 })();

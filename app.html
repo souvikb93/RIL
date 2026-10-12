@@ -42,7 +42,7 @@
           <h2>Where do we stand?</h2>
           <p class="wlead">See how far the region has already come.</p>
           <div class="wstat"><b id="wsToday"></b><span>renewable share of electricity today</span></div>
-          <ul><li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Renewable share, generation and capacity by district</span></li><li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Land used for wind and solar against the 2.2 % target</span></li><li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Electricity demand in total and per inhabitant</span></li></ul>
+          <ul><li><span class="anim wcheck" data-anim="checkmark" data-rest="end" aria-hidden="true"></span><span>Renewable share, generation and capacity by district</span></li><li><span class="anim wcheck" data-anim="checkmark" data-rest="end" aria-hidden="true"></span><span>Land used for wind and solar against the 2.2 % target</span></li><li><span class="anim wcheck" data-anim="checkmark" data-rest="end" aria-hidden="true"></span><span>Electricity demand in total and per inhabitant</span></li></ul>
           <button type="button" class="btn primary block" data-goto="today">Explore today</button>
         </article>
         <article class="wcard" style="--i:1">
@@ -50,7 +50,7 @@
           <h2>What if we build more?</h2>
           <p class="wlead">Test the state targets or your own mix.</p>
           <div class="wstat"><b id="wsPlan"></b><span>renewable share with the BB 2030 targets</span></div>
-          <ul><li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Start from BB 2030, BB 2040 or your own numbers</span></li><li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Adjust wind and solar, results update instantly</span></li><li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>See where new turbines and solar parks could go</span></li></ul>
+          <ul><li><span class="anim wcheck" data-anim="checkmark" data-rest="end" aria-hidden="true"></span><span>Start from BB 2030, BB 2040 or your own numbers</span></li><li><span class="anim wcheck" data-anim="checkmark" data-rest="end" aria-hidden="true"></span><span>Adjust wind and solar, results update instantly</span></li><li><span class="anim wcheck" data-anim="checkmark" data-rest="end" aria-hidden="true"></span><span>See where new turbines and solar parks could go</span></li></ul>
           <button type="button" class="btn primary block" data-goto="plan-start">Start planning</button>
         </article>
         <article class="wcard" style="--i:2">
@@ -58,7 +58,7 @@
           <h2>What does it mean here?</h2>
           <p class="wlead">Zoom in on one town or village.</p>
           <div class="wstat"><b id="wsPlace"></b><span>towns and villages to check</span></div>
-          <ul><li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Distance to the nearest wind area</span></li><li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Number of turbines within 2.5 km</span></li><li><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Yearly § 6 EEG income for the municipality</span></li></ul>
+          <ul><li><span class="anim wcheck" data-anim="checkmark" data-rest="end" aria-hidden="true"></span><span>Distance to the nearest wind area</span></li><li><span class="anim wcheck" data-anim="checkmark" data-rest="end" aria-hidden="true"></span><span>Number of turbines within 2.5 km</span></li><li><span class="anim wcheck" data-anim="checkmark" data-rest="end" aria-hidden="true"></span><span>Yearly § 6 EEG income for the municipality</span></li></ul>
           <button type="button" class="btn primary block" data-goto="place">Check a town</button>
         </article>
       </div>
@@ -70,7 +70,7 @@
 
       <!-- TODAY -->
       <section class="view" data-view="today">
-        <div class="view-hd"><button type="button" class="back" data-goto="home">All topics</button><h2>Where do we stand?</h2></div>
+        <div class="view-hd"><button type="button" class="back" data-goto="home"><span class="anim back-ico" data-anim="arrowLeftCircle" data-hover data-rest="end" aria-hidden="true"></span>All topics</button><h2>Where do we stand?</h2></div>
         <div class="block">
           <h3>Show on map</h3>
           <div class="tabs" id="catTabs" role="tablist" aria-label="Topic"></div>
@@ -85,7 +85,7 @@
       <!-- PLAN, screen 1: pick a starting point -->
       <section class="view" data-view="plan-start">
         <div class="view-hd">
-          <button type="button" class="back" data-goto="home">All topics</button>
+          <button type="button" class="back" data-goto="home"><span class="anim back-ico" data-anim="arrowLeftCircle" data-hover data-rest="end" aria-hidden="true"></span>All topics</button>
           <h2>What if we build more?</h2>
           <p class="view-sub">Pick a starting point. You can fine-tune it next.</p>
         </div>
@@ -95,7 +95,7 @@
       <!-- PLAN, screen 2: adjust -->
       <section class="view" data-view="plan">
         <div class="view-hd">
-          <button type="button" class="back" data-goto="plan-start">Starting point</button>
+          <button type="button" class="back" data-goto="plan-start"><span class="anim back-ico" data-anim="arrowLeftCircle" data-hover data-rest="end" aria-hidden="true"></span>Starting point</button>
           <h2 id="planTitle"></h2>
           <p class="view-sub" id="scenarioNote"></p>
         </div>
@@ -116,16 +116,13 @@
 
       <!-- MY PLACE -->
       <section class="view" data-view="place">
-        <div class="view-hd"><button type="button" class="back" data-goto="home">All topics</button><h2>What does it mean here?</h2></div>
+        <div class="view-hd"><button type="button" class="back" data-goto="home"><span class="anim back-ico" data-anim="arrowLeftCircle" data-hover data-rest="end" aria-hidden="true"></span>All topics</button><h2>What does it mean here?</h2></div>
         <div class="block">
           <h3 id="placeLabel">Town or village</h3>
           <div class="combo" id="placeCombo">
             <input type="text" id="placeInput" role="combobox" aria-labelledby="placeLabel" aria-expanded="false"
                    aria-controls="placeList" aria-autocomplete="list" placeholder="Search 266 places…" autocomplete="off">
-            <button type="button" class="combo-clear" id="placeClear" aria-label="Clear town" hidden>
-              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-            </button>
-            <svg class="combo-chev" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <button type="button" class="combo-icon" id="placeIcon" aria-label="Search places"><span class="anim" data-anim="searchToX" data-on="false" aria-hidden="true"></span></button>
             <ul class="combo-list" id="placeList" role="listbox" hidden></ul>
           </div>
           <p class="note">Or click anywhere on the map.</p>
@@ -134,7 +131,7 @@
       </section>
 
       <details class="sources">
-        <summary>Assumptions &amp; data sources</summary>
+        <summary><span class="anim info-ico" data-anim="info" data-hover data-rest="end" aria-hidden="true"></span>Assumptions &amp; data sources</summary>
         <div id="assumptions"></div>
       </details>
     </aside>
@@ -143,6 +140,7 @@
       <div class="kpis" id="kpis" aria-live="polite"></div>
       <div class="mapwrap">
         <div id="map"></div>
+        <div class="map-loading" id="mapLoading"><span class="anim" data-anim="loading2" data-loop aria-hidden="true"></span>Loading map…</div>
         <div class="map-hint" id="mapHint" hidden></div>
         <div class="layers">
           <button class="btn secondary sm" id="layersBtn" type="button" aria-expanded="false" aria-controls="layersPop">Layers</button>
@@ -162,6 +160,8 @@
 
   <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.1.0/turf.min.js"></script>
+  <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
+  <script src="js/anim.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

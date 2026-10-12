@@ -367,3 +367,36 @@ details.sources summary { font-size: 13px; color: var(--muted); }
 .wcard li svg { flex: none; color: var(--navy); margin-top: 2px; }
 .wcard .btn { height: 48px; }
 @media (prefers-reduced-motion: reduce) { .wcard { animation: none; } }
+
+/* ---------- Micro-animations (useanimations.com via lottie-web) ---------- */
+.anim { display: inline-block; flex: none; line-height: 0; }
+.anim svg { display: block; }
+.vh { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.wcheck { width: 20px; height: 20px; margin-top: -1px; }
+.back { display: inline-flex; align-items: center; gap: 6px; padding-left: 0; }
+.back::before { content: none; }
+.back-ico { width: 18px; height: 18px; }
+.radio { width: 20px; height: 20px; }
+.radio-off { border: 1.5px solid var(--line); border-radius: 50%; width: 16px; height: 16px; margin: 2px; }
+#metricList .mopt { justify-content: flex-start; }
+#metricList .mopt em, #metricList .mopt .soon { margin-left: auto; }
+.cb { width: 20px; height: 20px; }
+.lopt { position: relative; }
+.lopt:has(input:focus-visible) .cb { outline: 2px solid var(--navy); outline-offset: 1px; border-radius: 4px; }
+.combo input { padding-right: 44px; }
+.combo-icon {
+  position: absolute; right: 6px; top: 6px; width: 32px; height: 32px; border: 0; border-radius: 50%;
+  background: none; cursor: pointer; display: grid; place-items: center; color: var(--navy);
+}
+.combo-icon:hover { background: var(--bg); }
+.combo-icon .anim { width: 22px; height: 22px; }
+.warn { display: flex; gap: 8px; align-items: flex-start; }
+.warn-ico { width: 20px; height: 20px; }
+.info-ico { width: 16px; height: 16px; }
+details.sources summary::before { content: none; }
+.map-loading {
+  position: absolute; inset: 0; z-index: 4; display: flex; align-items: center; justify-content: center; gap: 10px;
+  background: var(--bg); color: var(--muted); font-size: 14px; transition: opacity .3s var(--ease), visibility .3s;
+}
+.map-loading .anim { width: 28px; height: 28px; }
+.map-loading.done { opacity: 0; visibility: hidden; }
