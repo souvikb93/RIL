@@ -30,13 +30,13 @@ const sumD = (k) => Object.values(DISTRICTS).reduce((a, d) => a + d[k], 0);
 const DEMAND_TODAY = sumD('demand');
 
 const SCENARIOS = {
-  heute: { label: 'Today', short: 'estimate', wind: sumD('wind'), ff: sumD('ff'), roof: sumD('roof'), demand: 100,
+  heute: { label: 'Today', short: 'Estimate', line: 'Where the region is now.', wind: sumD('wind'), ff: sumD('ff'), roof: sumD('roof'), demand: 100,
     note: 'Approximate current state. Every comparison starts here.' },
-  bb30: { label: 'BB 2030', short: 'state target', wind: 1769, ff: 1330, roof: 1440, demand: 115,
+  bb30: { label: 'BB 2030', short: 'Official target', line: 'Brandenburg energy strategy, 2030.', wind: 1769, ff: 1330, roof: 1440, demand: 115,
     note: 'Brandenburg Energy Strategy 2030, broken down to this region (15.4 % share).' },
-  bb40: { label: 'BB 2040', short: 'derived', wind: 2387, ff: 2440, roof: 2642, demand: 135,
+  bb40: { label: 'BB 2040', short: 'Derived', line: 'Brandenburg targets for 2040.', wind: 2387, ff: 2440, roof: 2642, demand: 135,
     note: 'State targets 2040 × 15.4 % regional share. Our derivation, not an official value.' },
-  eigen: { label: 'Custom', short: 'yours' },
+  eigen: { label: 'Custom', short: 'Yours', line: 'Set wind and solar yourself.' },
 };
 
 const SLIDERS = [
@@ -223,11 +223,11 @@ const isTodayLike = () => state.mode === 'today' || state.mode === 'home';
 // One shape for every card: label · change badge / value / bar (today tick, target) / note.
 const KPI_CARDS = [
   { id: 'share', label: 'Renewable share', dot: 'var(--navy)', v: (r) => r.share, show: (v) => [fmt(v), '%'],
-    max: 200, target: 100, d: 0, unit: ' pts', note: 'of electricity demand · target 100 %' },
+    max: 200, target: 100, d: 0, unit: ' pts', note: 'Of demand · target 100 %' },
   { id: 'turbines', label: 'Wind turbines', dot: 'var(--wind)', v: (r) => r.turbines, show: (v) => [`≈ ${fmt(v)}`, ''],
-    max: 620, d: 0, unit: '', note: 'as 6.5 MW equivalents' },
+    max: 620, d: 0, unit: '', note: 'As 6.5 MW equivalents' },
   { id: 'land', label: 'Land for wind', dot: 'var(--wind)', v: (r) => r.windPct, show: (v) => [fmt(v, 2), '%'],
-    max: 3.3, target: 2.2, d: 2, unit: ' pts', note: 'of the region · target 2.2 %' },
+    max: 3.3, target: 2.2, d: 2, unit: ' pts', note: 'Of the region · target 2.2 %' },
   { id: 'eeg', label: 'For municipalities', dot: 'var(--navy)', v: (r) => r.eeg / 1e6, show: (v) => [`€${fmt(v, 1)}m`, '/ year'],
     max: 27, d: 1, unit: 'm', pre: '€', note: '§ 6 EEG payments' },
 ];
@@ -256,7 +256,7 @@ function buildKpis() {
   });
 }
 
-function tween(el, from, to, show, ms = 850) {
+function tween(el, from, to, show, ms = 1400) {
   cancelAnimationFrame(el._raf);
   const t0 = performance.now();
   const step = (t) => {
@@ -271,7 +271,7 @@ function renderKpis(r, base) {
   const today = isTodayLike();
   const v = today ? base : r;
   $('#k-ctx').textContent = today ? 'Today' : SCENARIOS[state.scenario].label;
-  $('#k-ctx-sub').textContent = today ? 'current estimate' : 'scenario · click to change';
+  $('#k-ctx-sub').textContent = today ? 'Current estimate' : 'Scenario · click to change';
   $('#k-ctx-bar').style.width = `${{ heute: 25, bb30: 50, bb40: 75, eigen: 100 }[today ? 'heute' : state.scenario]}%`;
 
   KPI_CARDS.forEach((c) => {
@@ -286,7 +286,7 @@ function renderKpis(r, base) {
     tick.style.left = `${Math.min(then / c.max, 1) * 100}%`;
     tick.hidden = today;
     const p = $(`#k-${c.id}-pill`), d = now - then;
-    const txt = today ? '·' : Math.abs(d) < 1e-9 ? 'same as today' : `${d > 0 ? '▲' : '▼'} ${c.pre || ''}${fmt(Math.abs(d), c.d)}${c.unit}`;
+    const txt = today ? '·' : Math.abs(d) < 1e-9 ? 'Same as today' : `${d > 0 ? '▲' : '▼'} ${c.pre || ''}${fmt(Math.abs(d), c.d)}${c.unit}`;
     if (p.textContent !== txt) { p.textContent = txt; p.classList.remove('pop'); void p.offsetWidth; p.classList.add('pop'); }
     p.classList.toggle('ghost', today);
   });
@@ -443,14 +443,14 @@ function renderToday(base) {
 
 /* ---------- Plan ---------- */
 function buildPlan() {
-  const nums = (s) => `<span class="nums"><span><i style="background:var(--wind)"></i>${fmt(s.wind)} MW wind</span>`
-    + `<span><i style="background:var(--solar)"></i>${fmt(s.ff + s.roof)} MWp solar</span></span>`;
   $('#startList').innerHTML = ['heute', 'bb30', 'bb40', 'eigen'].map((k) => {
     const s = SCENARIOS[k];
-    return `<button type="button" class="choice" data-start="${k}">
-      <span class="choice-k">${s.short}</span><b>${k === 'eigen' ? 'Custom' : s.label}</b>
-      <span class="choice-d">${k === 'eigen' ? 'Set wind and solar yourself, starting from your current settings.' : s.note}</span>
-      ${k === 'eigen' ? '' : nums(s)}
+    const nums = k === 'eigen' ? '' : `<span class="start-nums">
+        <span><i style="background:var(--wind)"></i><b>${fmt(s.wind)}</b> MW wind</span>
+        <span><i style="background:var(--solar)"></i><b>${fmt(s.ff + s.roof)}</b> MWp solar</span></span>`;
+    return `<button type="button" class="start" data-start="${k}">
+      <span class="start-hd"><b>${s.label}</b><span class="tag">${s.short}</span></span>
+      <span class="start-line">${s.line}</span>${nums}
     </button>`;
   }).join('');
   $('#startList').addEventListener('click', (e) => {
@@ -606,7 +606,7 @@ function renderPlace() {
     <div class="place-hero">
       <span class="place-name">${name}</span>
       <span class="place-num">${eur(revenue)} <small>/ year</small></span>
-      <span class="place-sub">${revenue ? 'for municipalities within 2.5 km of turbines (§ 6 EEG)' : 'No wind turbines within 2.5 km, so no § 6 EEG payment here'}</span>
+      <span class="place-sub">${revenue ? 'For municipalities within 2.5 km of turbines (§ 6 EEG)' : 'No wind turbines within 2.5 km, so no § 6 EEG payment here'}</span>
     </div>
     <dl class="kv">
       <dt>Nearest wind area</dt><dd>${nearWind ? `${fmt(edge, 1)} km ${bearing(x, y, nearWind.x, nearWind.y)}` : 'none'}</dd>
@@ -874,6 +874,7 @@ function buildAssumptions() {
       <tr><td>Municipal payment, § 6 EEG</td><td>0.2 ct/kWh</td></tr>
       <tr><td>Min. distance wind → settlements</td><td>${fmt(ASSUME.settleBufferKm, 1)} km</td></tr>
     </table>
+    <p><b>Scenarios:</b> BB 2030 is the Brandenburg energy strategy broken down to this region (15.4 % share). BB 2040 applies the same share to the state's 2040 targets (15.5 GW wind, 33 GW solar); that step is our derivation, not an official value.</p>
     <p><b>Real data:</b> district boundaries (GADM), settlements (© OpenStreetMap contributors), BB 2030 targets and land ratios from the
       <a href="https://epp.rl-institut.de/de/" target="_blank" rel="noopener">EmPowerPlan tool</a> (RLI).</p>
     <p><b>Estimates &amp; demo data:</b> district values are estimates; wind resource and nature/forest areas are simulated to show the principle.</p>
