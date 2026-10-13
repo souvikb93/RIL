@@ -7,8 +7,8 @@
   <title>EmPowerPlan</title>
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
-  <link rel="stylesheet" href="css/tokens.css?v=202610131104">
-  <link rel="stylesheet" href="css/app.css?v=202610131104">
+  <link rel="stylesheet" href="css/tokens.css?v=202610131106">
+  <link rel="stylesheet" href="css/app.css?v=202610131106">
 </head>
 <body>
   <header class="top">
@@ -45,27 +45,27 @@
       <div class="wcards">
         <article class="wcard" style="--i:0">
           <span class="wkicker" data-i18n="w.today.k">Today</span>
-          <h2 data-i18n="w.today.h">Where do we stand?</h2>
+          <h2 id="w-today-h" data-i18n="w.today.h">Where do we stand?</h2>
           <p class="wlead" data-i18n="w.today.lead">See how far the region has already come.</p>
           <div class="wstat"><b id="wsToday"></b><span data-i18n="w.today.stat">Renewable share today</span></div>
           <ul><li><span class="anim wcheck" data-anim="checkmark" data-rest="end" aria-hidden="true"></span><span data-i18n="w.today.b1">Renewable share, generation and capacity by district</span></li><li><span class="anim wcheck" data-anim="checkmark" data-rest="end" aria-hidden="true"></span><span data-i18n="w.today.b2">Land used for wind and solar against the 2.2 % target</span></li><li><span class="anim wcheck" data-anim="checkmark" data-rest="end" aria-hidden="true"></span><span data-i18n="w.today.b3">Electricity demand in total and per inhabitant</span></li></ul>
-          <button type="button" class="btn primary block" data-goto="today" data-i18n="w.explore">Explore</button>
+          <button type="button" class="btn primary block" id="w-today-btn" aria-labelledby="w-today-btn w-today-h" data-goto="today" data-i18n="w.explore">Explore</button>
         </article>
         <article class="wcard" style="--i:1">
           <span class="wkicker" data-i18n="w.plan.k">Plan</span>
-          <h2 data-i18n="w.plan.h">What if we build more?</h2>
+          <h2 id="w-plan-h" data-i18n="w.plan.h">What if we build more?</h2>
           <p class="wlead" data-i18n="w.plan.lead">Test the state targets or your own mix.</p>
           <div class="wstat"><b id="wsPlan"></b><span data-i18n="w.plan.stat">Renewable share with BB 2030</span></div>
           <ul><li><span class="anim wcheck" data-anim="checkmark" data-rest="end" aria-hidden="true"></span><span data-i18n="w.plan.b1">Start from BB 2030, BB 2040 or your own numbers</span></li><li><span class="anim wcheck" data-anim="checkmark" data-rest="end" aria-hidden="true"></span><span data-i18n="w.plan.b2">Adjust wind and solar, results update instantly</span></li><li><span class="anim wcheck" data-anim="checkmark" data-rest="end" aria-hidden="true"></span><span data-i18n="w.plan.b3">See where new turbines and solar parks could go</span></li></ul>
-          <button type="button" class="btn primary block" data-goto="plan-start" data-i18n="w.explore">Explore</button>
+          <button type="button" class="btn primary block" id="w-plan-btn" aria-labelledby="w-plan-btn w-plan-h" data-goto="plan-start" data-i18n="w.explore">Explore</button>
         </article>
         <article class="wcard" style="--i:2">
           <span class="wkicker" data-i18n="w.place.k">My Place</span>
-          <h2 data-i18n="w.place.h">What does it mean here?</h2>
+          <h2 id="w-place-h" data-i18n="w.place.h">What does it mean here?</h2>
           <p class="wlead" data-i18n="w.place.lead">Zoom in on one town or village.</p>
           <div class="wstat"><b id="wsPlace"></b><span data-i18n="w.place.stat">Towns and villages</span></div>
           <ul><li><span class="anim wcheck" data-anim="checkmark" data-rest="end" aria-hidden="true"></span><span data-i18n="w.place.b1">Distance to the nearest wind area</span></li><li><span class="anim wcheck" data-anim="checkmark" data-rest="end" aria-hidden="true"></span><span data-i18n="w.place.b2">Number of turbines within 2.5 km</span></li><li><span class="anim wcheck" data-anim="checkmark" data-rest="end" aria-hidden="true"></span><span data-i18n="w.place.b3">Yearly § 6 EEG income for the municipality</span></li></ul>
-          <button type="button" class="btn primary block" data-goto="place" data-i18n="w.explore">Explore</button>
+          <button type="button" class="btn primary block" id="w-place-btn" aria-labelledby="w-place-btn w-place-h" data-goto="place" data-i18n="w.explore">Explore</button>
         </article>
       </div>
     </div>
@@ -181,9 +181,9 @@
   <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.1.0/turf.min.js"></script>
   <script src="https://unpkg.com/lottie-web@5.12.2/build/player/lottie.min.js"></script>
-  <script src="js/i18n.js?v=202610131104"></script>
-  <script src="js/pages.js?v=202610131104"></script>
-  <script src="js/anim.js?v=202610131104"></script>
-  <script src="js/app.js?v=202610131104"></script>
+  <script src="js/i18n.js?v=202610131106"></script>
+  <script src="js/pages.js?v=202610131106"></script>
+  <script src="js/anim.js?v=202610131106"></script>
+  <script src="js/app.js?v=202610131106"></script>
 </body>
 </html>
