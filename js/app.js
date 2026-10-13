@@ -301,6 +301,7 @@ function renderKpis(r, base) {
 
 /* ---------- KPI detail drawer ---------- */
 function openDrawer(id) {
+  if (id) { if (!$('#layersPop').hidden) setLayers(false); closeMenus(); }
   state.drawer = id;
   document.querySelectorAll('.kcard[data-k]').forEach((c) => {
     c.classList.toggle('active', c.dataset.k === id);
@@ -712,7 +713,13 @@ function buildPlace() {
 }
 
 /* ---------- Layers + legend ---------- */
+function closeMenus() {
+  $('#userMenu').hidden = true; $('#userBtn').setAttribute('aria-expanded', 'false');
+  $('#langDd')?.classList.remove('open');
+}
+
 function setLayers(open) {
+  if (open) { if (state.drawer) openDrawer(null); closeMenus(); }
   $('#layersPop').hidden = !open;
   $('#layersBtn').setAttribute('aria-expanded', String(open));
   syncBackdrop();

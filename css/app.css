@@ -509,7 +509,7 @@ details.sources summary::before { content: none; }
 
   /* Map overlays */
   .maplibregl-ctrl-top-right .maplibregl-ctrl-group { display: none; } /* pinch to zoom */
-  .layers { top: 8px; right: 8px; }
+  .layers { top: 8px; right: 8px; z-index: auto; } /* no stacking context: its bottom modal must rise above the sheet */
   .legend { top: 8px; left: 8px; bottom: auto; min-width: 0; padding: 8px 10px; cursor: pointer; max-width: calc(100% - 120px); }
   .legend:not(.open) > :not(h4) { display: none; }
   .legend h4 { margin: 0; display: flex; align-items: center; gap: 8px; }
