@@ -104,7 +104,6 @@ details.more summary::before, details.sources summary::before {
   transform: rotate(-45deg); transition: transform .2s var(--ease); margin-right: 2px;
 }
 details[open] > summary::before { transform: rotate(45deg); }
-details.more summary span { font-weight: 400; color: var(--muted); font-size: 13px; }
 .deep { padding-bottom: 14px; }
 .deep h4 { margin: 12px 0 8px; font-size: 13px; }
 .deep h4:first-child { margin-top: 2px; }
@@ -552,3 +551,9 @@ details.sources summary::before { content: none; }
   .pdl { grid-template-columns: 1fr; gap: 2px; }
   .pdl dd { margin-bottom: 10px; }
 }
+
+/* Expander summary: title on top, what's inside underneath */
+.sum-txt { display: flex; flex-direction: column; gap: 2px; }
+details.more .sum-title { font-size: 14px; font-weight: 700; color: var(--navy); }
+details.more .sum-hint { font-size: 13px; font-weight: 400; color: var(--muted); }
+details.more summary { align-items: center; }
