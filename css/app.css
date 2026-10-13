@@ -1,5 +1,5 @@
 /* EmPower app — desktop dashboard. Colour rules: DESIGN.md */
-body { display: flex; flex-direction: column; min-width: 1200px; overflow: hidden; }
+body { display: flex; flex-direction: column; min-width: 320px; overflow: hidden; }
 
 /* ---------- Top bar ---------- */
 .top {
@@ -431,3 +431,127 @@ details.sources summary::before { content: none; }
 .start-nums span { display: inline-flex; align-items: center; gap: 5px; }
 .start-nums i { width: 8px; height: 8px; border-radius: 2px; }
 .start-nums b { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* Desktop-only / mobile-only bits */
+.sheet-handle, .pop-hd { display: none; }
+.backdrop[hidden] { display: none; }
+.icon-btn {
+  width: 36px; height: 36px; border: 0; border-radius: 50%; background: none; color: var(--muted);
+  display: grid; place-items: center; cursor: pointer;
+}
+.icon-btn:hover { background: var(--bg); color: var(--ink); }
+
+/* ---------- Medium screens: KPI row scrolls sideways ---------- */
+@media (max-width: 1199px) {
+  .kpis { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 12px; }
+  .kcard { flex: 0 0 210px; scroll-snap-align: start; }
+  .kcard.ctx { flex-basis: 160px; }
+}
+
+/* ---------- Mobile (< 900px): full-screen map + bottom sheet ---------- */
+@media (max-width: 899px) {
+  body { height: 100dvh; }
+  .top { height: auto; min-height: 52px; padding: env(safe-area-inset-top) 12px 0; gap: 10px; }
+  .region-chip, #userName, .user-btn .chev { display: none; }
+  .brand .mark { width: 30px; height: 30px; }
+  .brand-name { font-size: 18px; }
+  .user-btn { padding: 4px; }
+
+  .layout { display: block; position: relative; }
+  .main { position: absolute; inset: 0; }
+
+  /* KPI strip: swipeable, snap per card */
+  .kpis { padding: 8px; gap: 8px; scroll-padding: 8px; scrollbar-width: none; }
+  .kpis::-webkit-scrollbar { display: none; }
+  .kcard { flex: 0 0 222px; grid-template-rows: 16px 26px 10px 14px; row-gap: 3px; padding: 10px 12px; border-radius: 12px; }
+  .kcard.ctx { flex-basis: 124px; }
+  .kcard:hover { transform: none; box-shadow: var(--shadow-sm); }
+  .kval { font-size: 20px; }
+  .kcard.ctx .kval { font-size: 17px; }
+  .klabel { font-size: 10.5px; letter-spacing: .03em; }
+  .ksub { font-size: 11px; }
+  .pill { font-size: 10.5px; padding: 1px 6px; }
+  .kmore { display: none; }
+
+  /* Left panel becomes a bottom sheet: peek / half / full */
+  .panel {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; height: 48dvh;
+    border-right: 0; border-radius: 18px 18px 0 0; box-shadow: 0 -8px 30px rgba(27, 40, 48, .18);
+    transition: height .35s var(--ease); padding-bottom: env(safe-area-inset-bottom); overscroll-behavior: contain;
+  }
+  .panel.dragging { transition: none; }
+  .sheet-handle {
+    display: flex; position: sticky; top: 0; z-index: 3; flex: none; width: 100%; height: 30px; border: 0; padding: 0;
+    background: #fff; justify-content: center; align-items: center; cursor: grab; touch-action: none; border-radius: 18px 18px 0 0;
+  }
+  .sheet-handle span { width: 40px; height: 5px; border-radius: 3px; background: #c4ced4; }
+  .sheet-handle:active { cursor: grabbing; }
+  .view { padding: 0 16px 8px; }
+  .view-hd { margin-bottom: 4px; }
+  .view-hd h2 { font-size: 19px; margin: 6px 0 4px; }
+  details.sources { padding: 0 16px; }
+
+  /* Touch sizes */
+  .back { min-height: 40px; }
+  .mopt, .start, .tabs button, .lopt { min-height: 44px; }
+  input[type=range] { height: 8px; }
+  input[type=range]::-webkit-slider-thumb { width: 28px; height: 28px; }
+  .range-wrap { margin-top: 14px; padding-bottom: 32px; }
+  .range-wrap:has(.tick.low) { padding-bottom: 44px; }
+  .ticks { left: 14px; right: 14px; top: 20px; }
+  .tick { font-size: 12px; padding: 10px 4px 2px; }
+  .combo input { height: 48px; font-size: 16px; } /* 16px stops iOS zoom-on-focus */
+  .combo-icon { top: 8px; }
+  .combo-list { max-height: 38dvh; }
+  .combo-list .opt { min-height: 44px; align-items: center; }
+  details.more summary { min-height: 44px; }
+
+  /* Map overlays */
+  .maplibregl-ctrl-top-right .maplibregl-ctrl-group { display: none; } /* pinch to zoom */
+  .layers { top: 8px; right: 8px; }
+  .legend { top: 8px; left: 8px; bottom: auto; min-width: 0; padding: 8px 10px; cursor: pointer; max-width: calc(100% - 120px); }
+  .legend:not(.open) > :not(h4) { display: none; }
+  .legend h4 { margin: 0; display: flex; align-items: center; gap: 8px; }
+  .legend h4::after {
+    content: ""; width: 6px; height: 6px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted);
+    transform: rotate(45deg) translateY(-2px); transition: transform .2s var(--ease);
+  }
+  .legend.open h4 { margin-bottom: 6px; }
+  .legend.open h4::after { transform: rotate(-135deg); }
+  .map-hint { display: none !important; } /* the sheet already says "or click the map" */
+  .dlabel { font-size: 11px; padding: 2px 6px; }
+
+  /* Bottom modals: KPI details + layers */
+  .backdrop { position: fixed; inset: 0; z-index: 50; background: rgba(27, 40, 48, .4); animation: fadeIn .2s var(--ease); }
+  .kdrawer {
+    position: fixed; top: auto; left: 0; right: 0; bottom: 0; width: auto; max-height: 82dvh; z-index: 60;
+    border-radius: 18px 18px 0 0; border: 0; transform: translateY(100%); opacity: 1;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .kdrawer.open { transform: none; }
+  .kdrawer::before { content: ""; display: block; width: 40px; height: 5px; border-radius: 3px; background: #c4ced4; margin: 10px auto 0; }
+  .kdrawer-hd { padding: 10px 16px 10px; }
+  .kdrawer-body { padding: 12px 16px 20px; }
+  .layers-pop {
+    position: fixed; left: 0; right: 0; bottom: 0; top: auto; width: auto; z-index: 60; max-height: 78dvh; overflow-y: auto;
+    border-radius: 18px 18px 0 0; border: 0; padding: 4px 16px calc(16px + env(safe-area-inset-bottom));
+    animation: sheetUp .3s var(--ease);
+  }
+  .pop-hd { display: flex; align-items: center; justify-content: space-between; padding: 10px 0 2px; font-size: 17px; color: var(--navy); }
+  .lopt { font-size: 15px; }
+
+  /* Welcome: stacked cards */
+  .welcome { inset: 56px 0 0 0; align-items: flex-start; padding: 20px 16px calc(28px + env(safe-area-inset-bottom)); }
+  .welcome-hd { margin-bottom: 20px; }
+  .welcome-hd h1 { font-size: 26px; }
+  .welcome-hd p { font-size: 15px; }
+  .wcards { grid-template-columns: 1fr; gap: 14px; }
+  .wcard { padding: 20px 18px 18px; }
+  .wcard:hover { transform: none; box-shadow: var(--shadow-sm); border-color: var(--line); }
+  .wcard h2 { font-size: 20px; }
+  .wlead { min-height: 0; }
+  .wstat { padding: 12px 0; margin: 14px 0; }
+  .wstat b { font-size: 32px; }
+  .wcard ul { margin-bottom: 18px; gap: 10px; }
+}
+@keyframes sheetUp { from { transform: translateY(100%); } to { transform: none; } }

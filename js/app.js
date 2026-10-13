@@ -302,7 +302,8 @@ function openDrawer(id) {
   });
   $('#kdrawer').classList.toggle('open', !!id);
   $('#kdrawer').setAttribute('aria-hidden', String(!id));
-  if (id) { update(); $('#kdrawerClose').focus({ preventScroll: true }); }
+  syncBackdrop();
+  if (id) { update(); if (!isMobile()) $('#kdrawerClose').focus({ preventScroll: true }); }
 }
 
 function renderDrawer(r, base) {
@@ -366,7 +367,11 @@ function renderDrawer(r, base) {
 
 function buildDrawer() {
   $('#kdrawerClose').addEventListener('click', () => openDrawer(null));
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && state.drawer) openDrawer(null); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (state.drawer) openDrawer(null);
+    if (!$('#layersPop').hidden) setLayers(false);
+  });
   $('#kdrawerBody').addEventListener('click', (e) => {
     const b = e.target.closest('[data-layer-on]'); if (!b) return;
     state.layers.add(b.dataset.layerOn);
@@ -663,7 +668,8 @@ function buildPlace() {
     const p = shown[k]; if (!p) return;
     typed = false;
     input.value = p.n; close(); input.blur();
-    map.flyTo({ center: [p.x, p.y], zoom: 11, duration: 900 });
+    if (isMobile()) setSheet('half');
+    map.flyTo({ center: [p.x, p.y], zoom: 11, duration: 900, padding: mapPadding() });
     setCheck(p.x, p.y, p.n);
   }
   function move(d) {
@@ -673,7 +679,7 @@ function buildPlace() {
     const el = $(`#po-${hl}`); el?.scrollIntoView({ block: 'nearest' });
     input.setAttribute('aria-activedescendant', `po-${hl}`);
   }
-  input.addEventListener('focus', () => { typed = false; input.select(); open(); });
+  input.addEventListener('focus', () => { typed = false; input.select(); open(); if (isMobile()) setSheet('full'); });
   input.addEventListener('click', () => { if (list.hidden) open(); });
   const icon = $('#placeIcon .anim');
   const syncIcon = () => {
@@ -700,17 +706,21 @@ function buildPlace() {
 }
 
 /* ---------- Layers + legend ---------- */
+function setLayers(open) {
+  $('#layersPop').hidden = !open;
+  $('#layersBtn').setAttribute('aria-expanded', String(open));
+  syncBackdrop();
+}
+
 function buildLayers() {
-  $('#layersPop').innerHTML = CONTEXT_LAYERS.map((g) => `<div class="lgroup"><span>${g.group}</span>${g.items.map((l) =>
+  $('#layersPop').innerHTML = `<div class="pop-hd"><b>Map layers</b>
+      <button type="button" class="icon-btn" id="layersClose" aria-label="Close layers">${X_ICON}</button></div>` + CONTEXT_LAYERS.map((g) => `<div class="lgroup"><span>${g.group}</span>${g.items.map((l) =>
     l.soon
       ? `<label class="lopt disabled"><input type="checkbox" disabled> ${l.label}<span class="soon">soon</span></label>`
       : `<label class="lopt"><input type="checkbox" class="vh" data-layer="${l.id}"><span class="anim cb" data-anim="checkBox" data-on="false" aria-hidden="true"></span><i class="sw" style="background:${l.color}"></i>${l.label}</label>`,
   ).join('')}</div>`).join('');
-  $('#layersBtn').addEventListener('click', () => {
-    const pop = $('#layersPop');
-    pop.hidden = !pop.hidden;
-    $('#layersBtn').setAttribute('aria-expanded', String(!pop.hidden));
-  });
+  $('#layersBtn').addEventListener('click', () => setLayers($('#layersPop').hidden));
+  $('#layersClose').addEventListener('click', () => setLayers(false));
   $('#layersPop').addEventListener('change', (e) => {
     const id = e.target.dataset.layer; if (!id) return;
     e.target.checked ? state.layers.add(id) : state.layers.delete(id);
@@ -739,6 +749,69 @@ function renderLegend() {
   $('#layersBtn').textContent = state.layers.size ? `Layers (${state.layers.size})` : 'Layers';
 }
 
+/* ---------- Mobile: bottom sheet, modals, legend chip ---------- */
+const X_ICON = '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+const mq = matchMedia('(max-width: 899px)');
+const isMobile = () => mq.matches;
+const sheet = { state: 'half' };
+
+function sheetHeights() {
+  const vh = window.innerHeight, top = $('.top').offsetHeight;
+  return { peek: 112, half: Math.round(vh * 0.48), full: vh - top - 10 };
+}
+function setSheet(st, animate = true) {
+  const panel = $('#panel');
+  sheet.state = st;
+  if (!isMobile()) { panel.style.height = ''; panel.removeAttribute('data-sheet'); return; }
+  panel.classList.toggle('dragging', !animate);
+  panel.dataset.sheet = st;
+  panel.style.height = `${sheetHeights()[st]}px`;
+  $('#sheetHandle').setAttribute('aria-label', st === 'full' ? 'Collapse panel' : 'Expand panel');
+}
+// Map padding so fitted areas aren't hidden under the sheet.
+function mapPadding() {
+  if (!isMobile()) return FIT.padding;
+  return { top: 20, left: 16, right: 16, bottom: Math.min(sheetHeights()[sheet.state], window.innerHeight * 0.5) + 16 };
+}
+function syncBackdrop() {
+  const on = isMobile() && (!!state.drawer || !$('#layersPop').hidden);
+  $('#backdrop').hidden = !on;
+}
+
+function buildMobile() {
+  const panel = $('#panel'), handle = $('#sheetHandle');
+  let startY = 0, startH = 0, lastY = 0, lastT = 0, v = 0, moved = false;
+  handle.addEventListener('pointerdown', (e) => {
+    if (!isMobile()) return;
+    handle.setPointerCapture(e.pointerId);
+    startY = lastY = e.clientY; lastT = performance.now(); startH = panel.offsetHeight; moved = false; v = 0;
+    panel.classList.add('dragging');
+  });
+  handle.addEventListener('pointermove', (e) => {
+    if (!handle.hasPointerCapture(e.pointerId)) return;
+    const h = sheetHeights();
+    const next = Math.max(h.peek - 30, Math.min(h.full, startH + (startY - e.clientY)));
+    if (Math.abs(e.clientY - startY) > 4) moved = true;
+    const now = performance.now();
+    v = (lastY - e.clientY) / Math.max(1, now - lastT); lastY = e.clientY; lastT = now;
+    panel.style.height = `${next}px`;
+  });
+  handle.addEventListener('pointerup', (e) => {
+    if (!handle.hasPointerCapture(e.pointerId)) return;
+    handle.releasePointerCapture(e.pointerId);
+    if (!moved) { setSheet({ peek: 'half', half: 'full', full: 'half' }[sheet.state]); return; }
+    // Snap to the nearest point, nudged by flick velocity.
+    const h = sheetHeights(), cur = panel.offsetHeight + v * 180;
+    const st = Object.entries(h).sort((a, b) => Math.abs(a[1] - cur) - Math.abs(b[1] - cur))[0][0];
+    setSheet(st);
+  });
+  $('#backdrop').addEventListener('click', () => { if (state.drawer) openDrawer(null); if (!$('#layersPop').hidden) setLayers(false); });
+  $('#legend').addEventListener('click', () => { if (isMobile()) $('#legend').classList.toggle('open'); });
+  mq.addEventListener('change', () => { setSheet(sheet.state, false); syncBackdrop(); });
+  window.addEventListener('resize', () => { if (isMobile()) setSheet(sheet.state, false); });
+  setSheet('half', false);
+}
+
 /* ---------- Map ---------- */
 let map;
 const districtMarkers = [];
@@ -749,7 +822,7 @@ function buildMap() {
     container: 'map',
     style: 'https://tiles.openfreemap.org/styles/positron',
     bounds: turf.bbox(geo.region),
-    fitBoundsOptions: FIT,
+    fitBoundsOptions: { padding: mapPadding() },
     attributionControl: { compact: true },
   });
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
@@ -806,7 +879,10 @@ function buildMap() {
     $('#mapLoading').classList.add('done');
   });
 
-  map.on('click', (e) => setCheck(e.lngLat.lng, e.lngLat.lat));
+  map.on('click', (e) => {
+    setCheck(e.lngLat.lng, e.lngLat.lat);
+    if (isMobile()) setSheet('half');
+  });
 }
 
 function syncMap() {
@@ -835,7 +911,8 @@ function setMode(mode) {
   if (mode === 'home') document.querySelectorAll('.wcheck').forEach((el, i) => Anim.replay(el, 350 + i * 90));
   document.querySelectorAll('.view').forEach((v) => v.classList.toggle('active', v.dataset.view === mode));
   $('#panel').scrollTop = 0;
-  if (isTodayLike() && map?.loaded()) map.fitBounds(turf.bbox(geo.region), { ...FIT, duration: 600 });
+  if (isMobile() && mode !== 'home') setSheet(mode === 'place' && !state.check ? 'half' : 'half');
+  if (isTodayLike() && map?.loaded()) map.fitBounds(turf.bbox(geo.region), { padding: mapPadding(), duration: 600 });
   update();
 }
 
@@ -897,7 +974,7 @@ function buildUser() {
   document.addEventListener('click', () => { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); });
   // Close the Layers popover on outside click too.
   document.addEventListener('click', (e) => {
-    if (!e.target.closest('.layers')) { $('#layersPop').hidden = true; $('#layersBtn').setAttribute('aria-expanded', 'false'); }
+    if (!e.target.closest('.layers') && !$('#layersPop').hidden) setLayers(false);
   });
 }
 
@@ -932,6 +1009,7 @@ function buildUser() {
       setTimeout(() => { $('#welcome').classList.remove('choosing'); card.classList.remove('chosen'); }, 300);
     }, 420);
   });
+  buildMobile();
   buildMap();
   Anim.mountAll();
   setMode(state.mode);

@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
   <title>EmPower</title>
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
@@ -67,6 +68,8 @@
 
   <main class="layout">
     <aside class="panel" id="panel">
+      <!-- Mobile: drag handle for the bottom sheet -->
+      <button type="button" class="sheet-handle" id="sheetHandle" aria-label="Resize panel"><span></span></button>
 
       <!-- TODAY -->
       <section class="view" data-view="today">
@@ -144,7 +147,7 @@
         <div class="map-hint" id="mapHint" hidden></div>
         <div class="layers">
           <button class="btn secondary sm" id="layersBtn" type="button" aria-expanded="false" aria-controls="layersPop">Layers</button>
-          <div class="layers-pop" id="layersPop" hidden></div>
+          <div class="layers-pop" id="layersPop" hidden role="dialog" aria-label="Map layers"></div>
         </div>
         <div class="legend" id="legend"></div>
         <aside class="kdrawer" id="kdrawer" aria-hidden="true" aria-labelledby="kdrawerTitle">
@@ -159,6 +162,8 @@
       </div>
     </section>
   </main>
+
+  <div class="backdrop" id="backdrop" hidden></div>
 
   <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.1.0/turf.min.js"></script>
