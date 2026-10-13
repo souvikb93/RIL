@@ -50,6 +50,7 @@ Rules
 |---|---|---|
 | Feature / topic names | Title Case | Today · Plan · My Place |
 | Input labels | Title Case | Town or Village |
+| Expander titles | Title Case | More Settings · More Results |
 | Everything else (headings, buttons, legend, captions) | Sentence case | Existing wind areas · Show on map |
 | Placeholders | Sentence case, describe the input | Enter a town or village name |
 

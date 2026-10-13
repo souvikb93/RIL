@@ -556,4 +556,6 @@ details.sources summary::before { content: none; }
 .sum-txt { display: flex; flex-direction: column; gap: 2px; }
 details.more .sum-title { font-size: 14px; font-weight: 700; color: var(--navy); }
 details.more .sum-hint { font-size: 13px; font-weight: 400; color: var(--muted); }
-details.more summary { align-items: center; }
+/* Chevron sits on the title line, not between title and description */
+details.more summary { align-items: flex-start; }
+details.more summary::before { margin-top: 6px; flex: none; }
