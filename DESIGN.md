@@ -43,3 +43,21 @@ Rules
 2. 2–3 supporting numbers
 3. Controls (primary only)
 4. Collapsed: more settings, more results, sources
+
+## Copy rules
+| Element | Case | Example |
+|---|---|---|
+| Feature / topic names | Title Case | Today · Plan · My Place |
+| Input labels | Title Case | Town or Village |
+| Everything else (headings, buttons, legend, captions) | Sentence case | Existing wind areas · Show on map |
+| Placeholders | Sentence case, describe the input | Enter a town or village name |
+
+- No forced uppercase (`text-transform`); hierarchy comes from weight, size and colour.
+- CTAs: verb + noun, ≤ 3 words. Helper text is action-first and device-neutral ("select", not "click").
+- German: natural phrasing, formal "Sie", German number formats (1.769 MW · 10,1 Mio. €); nouns capitalised per German rules.
+
+## Accessibility baseline
+- Text ≥ 12px and ≥ 4.5:1 contrast; input borders ≥ 3:1.
+- 44px touch targets on mobile; visible focus everywhere; `prefers-reduced-motion` respected.
+- Off-screen UI is `visibility: hidden` (not just moved), so keyboard focus can't reach it.
+- Repeated buttons get unique accessible names (e.g. "Explore – Where do we stand?").
