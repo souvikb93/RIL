@@ -26,8 +26,12 @@ body { display: flex; flex-direction: column; min-width: 320px; overflow: hidden
   position: absolute; right: 0; top: calc(100% + 6px); min-width: 160px; z-index: 20;
   background: #fff; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-md); padding: 6px;
 }
-.menu a { display: block; padding: 9px 10px; border-radius: var(--radius-sm); color: var(--ink); text-decoration: none; font-size: 14px; }
-.menu a:hover { background: var(--bg); }
+.menu a, .menu button {
+  display: block; width: 100%; text-align: left; padding: 9px 10px; border: 0; background: none; cursor: pointer;
+  border-radius: var(--radius-sm); color: var(--ink); text-decoration: none; font-size: 14px; min-height: 40px;
+}
+.menu a:hover, .menu button:hover { background: var(--bg); }
+.menu hr { border: 0; border-top: 1px solid var(--line); margin: 6px 0; }
 
 /* ---------- Layout ---------- */
 .layout { flex: 1; min-height: 0; display: grid; grid-template-columns: 380px minmax(0, 1fr); }
@@ -519,3 +523,34 @@ details.sources summary::before { content: none; }
   .wcard ul { margin-bottom: 18px; gap: 10px; }
 }
 @keyframes sheetUp { from { transform: translateY(100%); } to { transform: none; } }
+
+/* ---------- Documentation / Contact pages ---------- */
+.page {
+  position: fixed; inset: 64px 0 0 0; z-index: 35; overflow-y: auto; background: var(--bg);
+  padding: 28px 32px 48px; animation: fadeIn .25s var(--ease);
+}
+.page[hidden] { display: none; }
+.page-inner { max-width: 760px; margin: 0 auto; }
+.page h1 { font-size: 30px; color: var(--navy); letter-spacing: -0.02em; margin: 12px 0 8px; }
+.plead { font-size: 16px; color: var(--muted); margin: 0 0 24px; line-height: 1.55; max-width: 62ch; }
+.pcard { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; margin-bottom: 14px; box-shadow: var(--shadow-sm); }
+.pcard h2 { font-size: 17px; margin: 0 0 12px; color: var(--ink); }
+.pcard p { margin: 0 0 10px; line-height: 1.55; }
+.pcard a { color: var(--navy); font-weight: 700; }
+.pnote { font-size: 13.5px; color: var(--muted); }
+.pdl { display: grid; grid-template-columns: 110px 1fr; gap: 10px 16px; margin: 0 0 12px; }
+.pdl dt { font-weight: 700; color: var(--navy); }
+.pdl dd { margin: 0; line-height: 1.5; }
+.plinks, .plist, .pubs { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.plinks li span, .pubs li span { color: var(--muted); font-size: 13px; margin-left: 6px; }
+.pubs li { display: flex; flex-direction: column; gap: 2px; }
+.pubs li span { margin-left: 0; }
+.addr { font-style: normal; line-height: 1.6; margin-bottom: 8px; }
+.ptel { margin-bottom: 14px; }
+@media (max-width: 899px) {
+  .page { inset: 56px 0 0 0; padding: 16px 16px calc(32px + env(safe-area-inset-bottom)); }
+  .page h1 { font-size: 24px; }
+  .pcard { padding: 16px; }
+  .pdl { grid-template-columns: 1fr; gap: 2px; }
+  .pdl dd { margin-bottom: 10px; }
+}

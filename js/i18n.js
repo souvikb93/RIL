@@ -7,7 +7,7 @@
 const I18N = (() => {
   const D = {
     en: {
-      'login.title': 'EmPower – Sign in',
+      'login.title': 'EmPowerPlan – Sign in',
       'login.welcome': 'Welcome back',
       'login.sub': 'Sign in to your account to continue.',
       'login.email': 'Email',
@@ -18,11 +18,12 @@ const I18N = (() => {
       'login.apple': 'Sign in with Apple',
 
       'lang.label': 'Language',
-      'nav.home': 'EmPower home',
+      'nav.home': 'EmPowerPlan home',
       'nav.signOut': 'Sign out',
+      'nav.docs': 'Documentation', 'nav.contact': 'Contact', 'nav.back': 'Back',
       'user.guest': 'Guest',
 
-      'w.titleGuest': 'Welcome to EmPower',
+      'w.titleGuest': 'Welcome to EmPowerPlan',
       'w.titleUser': 'Hi {name}, welcome back',
       'w.sub': 'What do you want to find out about wind and solar in Oderland-Spree?',
       'w.explore': 'Explore',
@@ -36,7 +37,7 @@ const I18N = (() => {
       'w.plan.b1': 'Start from BB 2030, BB 2040 or your own numbers',
       'w.plan.b2': 'Adjust wind and solar, results update instantly',
       'w.plan.b3': 'See where new turbines and solar parks could go',
-      'w.place.k': 'My place', 'w.place.h': 'What does it mean here?', 'w.place.lead': 'Zoom in on one town or village.',
+      'w.place.k': 'My Place', 'w.place.h': 'What does it mean here?', 'w.place.lead': 'Zoom in on one town or village.',
       'w.place.stat': 'Towns and villages',
       'w.place.b1': 'Distance to the nearest wind area',
       'w.place.b2': 'Number of turbines within 2.5 km',
@@ -157,7 +158,7 @@ const I18N = (() => {
       'leg.title': 'Scenario: {x}',
     },
     de: {
-      'login.title': 'EmPower – Anmelden',
+      'login.title': 'EmPowerPlan – Anmelden',
       'login.welcome': 'Willkommen zurück',
       'login.sub': 'Melden Sie sich an, um fortzufahren.',
       'login.email': 'E-Mail',
@@ -168,11 +169,12 @@ const I18N = (() => {
       'login.apple': 'Mit Apple anmelden',
 
       'lang.label': 'Sprache',
-      'nav.home': 'EmPower Startseite',
+      'nav.home': 'EmPowerPlan Startseite',
       'nav.signOut': 'Abmelden',
+      'nav.docs': 'Dokumentation', 'nav.contact': 'Kontakt', 'nav.back': 'Zurück',
       'user.guest': 'Gast',
 
-      'w.titleGuest': 'Willkommen bei EmPower',
+      'w.titleGuest': 'Willkommen bei EmPowerPlan',
       'w.titleUser': 'Hallo {name}, willkommen zurück',
       'w.sub': 'Was möchten Sie über Wind- und Solarenergie in Oderland-Spree erfahren?',
       'w.explore': 'Entdecken',

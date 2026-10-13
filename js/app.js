@@ -1,4 +1,4 @@
-/* EmPower – prototype.
+/* EmPowerPlan (redesign concept) – prototype.
    Step 1: pick a question (Today / Plan / My place). Step 2: explore it on one map.
    Design rules: DESIGN.md.
    Every number comes from ASSUME, DISTRICTS and the slider values. */
@@ -914,8 +914,29 @@ function syncMap() {
   hint.textContent = msg;
 }
 
+/* ---------- Documentation / Contact pages ---------- */
+let pageOpen = null;
+function openPage(name) {
+  pageOpen = name;
+  $('#pageBody').innerHTML = PAGES[name];
+  $('#page').hidden = false;
+  $('#page').scrollTop = 0;
+  $('#userMenu').hidden = true; $('#userBtn').setAttribute('aria-expanded', 'false');
+  if (state.drawer) openDrawer(null);
+  if (!$('#layersPop').hidden) setLayers(false);
+  $('#pageBack').focus({ preventScroll: true });
+}
+function closePage() {
+  if (!pageOpen) return;
+  pageOpen = null;
+  $('#page').hidden = true;
+}
+
 /* ---------- Mode + update loop ---------- */
+const PAGE_MODES = ['docs', 'contact'];
 function setMode(mode) {
+  if (PAGE_MODES.includes(mode)) { openPage(mode); return; }
+  closePage();
   state.mode = mode;
   $('#welcome').hidden = mode !== 'home';
   if (mode === 'home') document.querySelectorAll('.wcheck').forEach((el, i) => Anim.replay(el, 350 + i * 90));
@@ -1010,6 +1031,8 @@ function buildUser() {
   buildLayers();
   buildAssumptions();
   buildUser();
+  $('#pageBack').addEventListener('click', closePage);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && pageOpen) closePage(); });
   document.addEventListener('click', (e) => {
     const g = e.target.closest('[data-goto]'); if (!g) return;
     e.preventDefault();

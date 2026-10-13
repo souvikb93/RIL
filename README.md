@@ -1,4 +1,4 @@
-# EmPower
+# EmPowerPlan — redesign concept
 
 A desktop prototype for planning wind and solar in the Oderland-Spree region (Brandenburg). It is a UX redesign concept based on RLI's [EmPowerPlan](https://epp.rl-institut.de/de/) tool.
 

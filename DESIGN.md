@@ -1,4 +1,4 @@
-# Design rules — Energy Transition Compass
+# Design rules — EmPowerPlan (redesign)
 
 ## Colour system (5 categories, nothing outside them)
 

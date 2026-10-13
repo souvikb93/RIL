@@ -1,4 +1,4 @@
-# HANDOFF — EmPower
+# HANDOFF — EmPowerPlan (redesign)
 
 ## Goal
 A UX-redesign MVP of RLI's EmPowerPlan tool (Oderland-Spree, Brandenburg): simpler flow, clear hierarchy, dashboard feel, Brandenburg CD colours.

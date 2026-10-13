@@ -83,3 +83,6 @@ button, input, select { font-family: inherit; }
 }
 .lang-opt:hover { background: var(--bg); }
 .lang-opt.active { color: var(--navy); font-weight: 700; }
+
+/* Wordmark: EmPower + "Plan" in Brandenburg-Rot */
+.brand-plan { color: var(--red-ink); }
