@@ -333,7 +333,7 @@ const I18N = (() => {
     location.reload();
   }
 
-  // FarmDoc-style switcher: "EN ⌄" → "DE — Deutsch" / "EN — English"
+  // FarmDoc-style switcher: "EN ⌄" → "Deutsch" / "English"
   function mountSwitcher(host) {
     if (!host) return;
     host.innerHTML = `
@@ -343,7 +343,7 @@ const I18N = (() => {
       </button>
       <div class="lang-menu" role="listbox" aria-label="${t('lang.label')}">
         ${[['de', 'Deutsch'], ['en', 'English']].map(([k, n]) =>
-          `<button type="button" class="lang-opt${k === lang ? ' active' : ''}" role="option" aria-selected="${k === lang}" data-lang="${k}">${k.toUpperCase()} — ${n}</button>`).join('')}
+          `<button type="button" class="lang-opt${k === lang ? ' active' : ''}" role="option" aria-selected="${k === lang}" data-lang="${k}" lang="${k}">${n}</button>`).join('')}
       </div>`;
     const trig = host.querySelector('.lang-trigger');
     const close = () => { host.classList.remove('open'); trig.setAttribute('aria-expanded', 'false'); };
