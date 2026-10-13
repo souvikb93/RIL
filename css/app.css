@@ -558,4 +558,5 @@ details.more .sum-title { font-size: 14px; font-weight: 700; color: var(--navy);
 details.more .sum-hint { font-size: 13px; font-weight: 400; color: var(--muted); }
 /* Chevron sits on the title line, not between title and description */
 details.more summary { align-items: flex-start; }
-details.more summary::before { margin-top: 6px; flex: none; }
+details.more summary::before { flex: none; margin-top: calc((1.45em - 6px) / 2); } /* centre of the 6px chevron = centre of the title's first line */
+details.more .sum-title { line-height: 1.45; }
