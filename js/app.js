@@ -30,12 +30,9 @@ const sumD = (k) => Object.values(DISTRICTS).reduce((a, d) => a + d[k], 0);
 const DEMAND_TODAY = sumD('demand');
 
 const SCENARIOS = {
-  heute: { label: t('sc.heute'), short: t('sc.heute.tag'), line: t('sc.heute.line'), wind: sumD('wind'), ff: sumD('ff'), roof: sumD('roof'), demand: 100,
-    note: 'Approximate current state. Every comparison starts here.' },
-  bb30: { label: 'BB 2030', short: t('sc.bb30.tag'), line: t('sc.bb30.line'), wind: 1769, ff: 1330, roof: 1440, demand: 115,
-    note: 'Brandenburg Energy Strategy 2030, broken down to this region (15.4 % share).' },
-  bb40: { label: 'BB 2040', short: t('sc.bb40.tag'), line: t('sc.bb40.line'), wind: 2387, ff: 2440, roof: 2642, demand: 135,
-    note: 'State targets 2040 × 15.4 % regional share. Our derivation, not an official value.' },
+  heute: { label: t('sc.heute'), short: t('sc.heute.tag'), line: t('sc.heute.line'), wind: sumD('wind'), ff: sumD('ff'), roof: sumD('roof'), demand: 100 },
+  bb30: { label: 'BB 2030', short: t('sc.bb30.tag'), line: t('sc.bb30.line'), wind: 1769, ff: 1330, roof: 1440, demand: 115 },
+  bb40: { label: 'BB 2040', short: t('sc.bb40.tag'), line: t('sc.bb40.line'), wind: 2387, ff: 2440, roof: 2642, demand: 135 },
   eigen: { label: t('sc.eigen'), short: t('sc.eigen.tag'), line: t('sc.eigen.line') },
 };
 
@@ -750,7 +747,7 @@ function renderLegend() {
     html = `<h4>${m.label} (${m.unit})</h4><div class="scale">${SCALE.map((c, i) =>
       `<div><i style="background:${c}"></i>${i < 4 ? `${fmt(edges[i], m.d)}–${fmt(edges[i + 1], m.d)}` : `> ${fmt(edges[4], m.d)}`}</div>`).join('')}</div>`;
   } else {
-    html = `<h4>${SCENARIOS[state.scenario].label}</h4>
+    html = `<h4>${t('leg.title', { x: SCENARIOS[state.scenario].label })}</h4>
       <div class="row"><i class="sw wind-old"></i>${t('leg.windOld')}</div>
       <div class="row"><i class="sw wind-new"></i>${t('leg.windNew')}</div>
       <div class="row"><i class="sw solar-old"></i>${t('leg.solarOld')}</div>

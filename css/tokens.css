@@ -51,7 +51,7 @@ button, input, select { font-family: inherit; }
 /* Buttons — text only (no icons in CTAs) */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  font-size: 15px; font-weight: 700; border-radius: var(--radius); padding: 10px 18px; line-height: 1.2;
+  min-height: 44px; font-size: 15px; font-weight: 700; border-radius: var(--radius); padding: 10px 18px; line-height: 1.2;
   cursor: pointer; border: 1.5px solid transparent; transition: background .15s var(--ease), border-color .15s var(--ease), box-shadow .15s var(--ease);
 }
 .btn.primary { background: var(--navy); color: #fff; }
