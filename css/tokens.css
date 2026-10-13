@@ -89,7 +89,7 @@ button, input, select { font-family: inherit; }
 .lang-opt.active { color: var(--navy); font-weight: 700; }
 
 /* Wordmark: EmPower + "Plan" in Brandenburg-Rot */
-.brand-plan { color: var(--red-ink); margin-left: -0.06em; } /* optical kerning: Arial's open "r" + "P" stem plus the colour change read as a gap */
+.brand-plan { color: var(--red-ink); margin-left: -0.02em; } /* optical kerning: Arial's open "r" + "P" stem plus the colour change read as a gap */
 .auth-brand-name, .brand-name { white-space: nowrap; }
 
 /* Text links in content (docs, contact, assumptions) */
