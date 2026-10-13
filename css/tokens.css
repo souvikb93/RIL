@@ -12,6 +12,10 @@
   --line: #dde3e7;
   --bg: #f3f5f6;
   --card: #ffffff;
+  /* Links: the familiar web blue, always underlined */
+  --link: #0b57d0;
+  --link-hover: #0842a0;
+  --link-visited: #6b3fa0;
   /* Energy */
   --wind: #037E9E;
   --wind-ink: #025a71;
@@ -86,3 +90,10 @@ button, input, select { font-family: inherit; }
 
 /* Wordmark: EmPower + "Plan" in Brandenburg-Rot */
 .brand-plan { color: var(--red-ink); }
+
+/* Text links in content (docs, contact, assumptions) */
+.prose-link, .pcard a, .sources a {
+  color: var(--link); font-weight: 400; text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px;
+}
+.pcard a:visited, .sources a:visited { color: var(--link-visited); }
+.pcard a:hover, .sources a:hover { color: var(--link-hover); text-decoration-thickness: 2px; }

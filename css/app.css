@@ -198,7 +198,6 @@ details.sources summary { font-size: 13px; color: var(--muted); }
 .sources td { padding: 4px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
 .sources td:last-child { text-align: right; white-space: nowrap; padding-left: 8px; }
 .sources p { color: var(--muted); margin: 8px 0; }
-.sources a { color: var(--navy); }
 
 /* ---------- KPI cards (dashboard row) ---------- */
 .kpis { display: grid; grid-template-columns: 170px repeat(4, minmax(0, 1fr)); gap: 12px; padding: 12px; flex: none; background: var(--bg); border-bottom: 1px solid var(--line); }
@@ -536,7 +535,6 @@ details.sources summary::before { content: none; }
 .pcard { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; margin-bottom: 14px; box-shadow: var(--shadow-sm); }
 .pcard h2 { font-size: 17px; margin: 0 0 12px; color: var(--ink); }
 .pcard p { margin: 0 0 10px; line-height: 1.55; }
-.pcard a { color: var(--navy); font-weight: 700; }
 .pnote { font-size: 13.5px; color: var(--muted); }
 .pdl { display: grid; grid-template-columns: 110px 1fr; gap: 10px 16px; margin: 0 0 12px; }
 .pdl dt { font-weight: 700; color: var(--navy); }

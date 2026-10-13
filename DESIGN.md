@@ -7,6 +7,7 @@
 | **Brand & limits** | Brandenburg-Rot `#E60000` | Top brand bar, logo, region outline, target lines, "over the limit" warnings | Data values, buttons, decoration |
 | **Interface** | Navy `#214152` + neutrals (`#1b2830` ink, `#5a6a74` muted, `#dde3e7` line, `#f3f5f6` bg) | Text, primary buttons, selected tab/chip, focus | Energy data |
 | **Energy** | Wind `#037E9E` (blue = air) · Solar `#FFD800` (yellow = sun) · Rooftop solar `#F2B705` | Everything about wind or solar, everywhere: sliders, map areas, mix bar, legend | Anything else |
+| **Links** | Blue `#0B57D0` (visited `#6B3FA0`), always underlined | Text links in content (docs, contact, assumptions) | Buttons, UI controls |
 | **Context layers** | Nature `#66CC66` (green = nature) · Settlements `#8e9aa1` (grey = built) | Optional map layers | Results |
 | **Data scale** | 5 navy tints `#e6edf1 → #214152` | Choropleth ("more = darker") | Categories |
 
