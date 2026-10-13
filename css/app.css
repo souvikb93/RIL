@@ -99,11 +99,13 @@ details.more summary, details.sources summary {
   cursor: pointer; padding: 14px 0; font-weight: 700; font-size: 14px; color: var(--navy); list-style: none; display: flex; align-items: center; gap: 8px;
 }
 details summary::-webkit-details-marker { display: none; }
+/* Chevron: an icon symmetric about its centre, so rotating it never shifts it */
 details.more summary::before, details.sources summary::before {
-  content: ""; width: 6px; height: 6px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
-  transform: rotate(-45deg); transition: transform .2s var(--ease); margin-right: 2px;
+  content: ""; width: 16px; height: 16px; flex: none; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M6 4l4 4-4 4' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px 16px no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M6 4l4 4-4 4' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px 16px no-repeat;
+  transition: transform .2s var(--ease);
 }
-details[open] > summary::before { transform: rotate(45deg); }
+details[open] > summary::before { transform: rotate(90deg); }
 .deep { padding-bottom: 14px; }
 .deep h4 { margin: 12px 0 8px; font-size: 13px; }
 .deep h4:first-child { margin-top: 2px; }
@@ -558,5 +560,5 @@ details.more .sum-title { font-size: 14px; font-weight: 700; color: var(--navy);
 details.more .sum-hint { font-size: 13px; font-weight: 400; color: var(--muted); }
 /* Chevron sits on the title line, not between title and description */
 details.more summary { align-items: flex-start; }
-details.more summary::before { flex: none; margin-top: calc((1.45em - 6px) / 2); } /* centre of the 6px chevron = centre of the title's first line */
+details.more summary::before { margin-top: calc((1.45em - 16px) / 2); } /* centre of the 16px chevron = centre of the title's first line */
 details.more .sum-title { line-height: 1.45; }
