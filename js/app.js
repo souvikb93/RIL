@@ -30,38 +30,38 @@ const sumD = (k) => Object.values(DISTRICTS).reduce((a, d) => a + d[k], 0);
 const DEMAND_TODAY = sumD('demand');
 
 const SCENARIOS = {
-  heute: { label: 'Today', short: 'Estimate', line: 'Where the region is now.', wind: sumD('wind'), ff: sumD('ff'), roof: sumD('roof'), demand: 100,
+  heute: { label: t('sc.heute'), short: t('sc.heute.tag'), line: t('sc.heute.line'), wind: sumD('wind'), ff: sumD('ff'), roof: sumD('roof'), demand: 100,
     note: 'Approximate current state. Every comparison starts here.' },
-  bb30: { label: 'BB 2030', short: 'Official target', line: 'Brandenburg energy strategy, 2030.', wind: 1769, ff: 1330, roof: 1440, demand: 115,
+  bb30: { label: 'BB 2030', short: t('sc.bb30.tag'), line: t('sc.bb30.line'), wind: 1769, ff: 1330, roof: 1440, demand: 115,
     note: 'Brandenburg Energy Strategy 2030, broken down to this region (15.4 % share).' },
-  bb40: { label: 'BB 2040', short: 'Derived', line: 'Brandenburg targets for 2040.', wind: 2387, ff: 2440, roof: 2642, demand: 135,
+  bb40: { label: 'BB 2040', short: t('sc.bb40.tag'), line: t('sc.bb40.line'), wind: 2387, ff: 2440, roof: 2642, demand: 135,
     note: 'State targets 2040 × 15.4 % regional share. Our derivation, not an official value.' },
-  eigen: { label: 'Custom', short: 'Yours', line: 'Set wind and solar yourself.' },
+  eigen: { label: t('sc.eigen'), short: t('sc.eigen.tag'), line: t('sc.eigen.line') },
 };
 
 const SLIDERS = [
-  { key: 'wind', label: 'Wind power', unit: 'MW', min: 0, max: 4000, step: 25, color: 'var(--wind)', main: true },
-  { key: 'ff', label: 'Ground-mounted solar', unit: 'MWp', min: 0, max: 5000, step: 25, color: 'var(--solar)', main: true },
-  { key: 'roof', label: 'Rooftop solar', unit: 'MWp', min: 0, max: 4000, step: 25, color: 'var(--solar-roof)' },
-  { key: 'demand', label: 'Electricity demand', unit: '% of today', min: 50, max: 200, step: 5, color: 'var(--navy)' },
+  { key: 'wind', label: t('sl.wind'), unit: 'MW', min: 0, max: 4000, step: 25, color: 'var(--wind)', main: true },
+  { key: 'ff', label: t('sl.ff'), unit: 'MWp', min: 0, max: 5000, step: 25, color: 'var(--solar)', main: true },
+  { key: 'roof', label: t('sl.roof'), unit: 'MWp', min: 0, max: 4000, step: 25, color: 'var(--solar-roof)' },
+  { key: 'demand', label: t('sl.demand'), unit: t('sl.ofToday'), min: 50, max: 200, step: 5, color: 'var(--navy)' },
 ];
 
 // Three per category; unbuilt ones stay visible but disabled.
 const METRICS = [
   { group: 'Energy', items: [
-    { key: 'share', label: 'Renewable share', unit: '%', breaks: [25, 50, 75, 100], d: 0, desc: 'Share of electricity use covered by wind and solar.' },
-    { key: 'gen', label: 'Generation', unit: 'GWh', breaks: [100, 500, 1000, 1500], d: 0, desc: 'Electricity from wind and solar per year.' },
-    { key: 'mw', label: 'Installed capacity', unit: 'MW', breaks: [100, 300, 600, 900], d: 0, desc: 'Wind and solar capacity in place.' },
+    { key: 'share', label: t('m.share'), unit: '%', breaks: [25, 50, 75, 100], d: 0, desc: t('m.share.d') },
+    { key: 'gen', label: t('m.gen'), unit: 'GWh', breaks: [100, 500, 1000, 1500], d: 0, desc: t('m.gen.d') },
+    { key: 'mw', label: t('m.mw'), unit: 'MW', breaks: [100, 300, 600, 900], d: 0, desc: t('m.mw.d') },
   ] },
   { group: 'Land', items: [
-    { key: 'windLand', label: 'Land for wind', unit: '%', breaks: [0.25, 0.5, 1, 2.2], d: 2, desc: 'Share of the area used by wind turbines.' },
-    { key: 'windTarget', label: 'Progress to wind target', unit: '%', breaks: [25, 50, 75, 100], d: 0, desc: 'How far along the 2.2 % land target is.' },
-    { key: 'pvLand', label: 'Land for solar', unit: '%', breaks: [0.05, 0.1, 0.2, 0.4], d: 2, desc: 'Share of the area used by ground-mounted solar.' },
+    { key: 'windLand', label: t('m.windLand'), unit: '%', breaks: [0.25, 0.5, 1, 2.2], d: 2, desc: t('m.windLand.d') },
+    { key: 'windTarget', label: t('m.windTarget'), unit: '%', breaks: [25, 50, 75, 100], d: 0, desc: t('m.windTarget.d') },
+    { key: 'pvLand', label: t('m.pvLand'), unit: '%', breaks: [0.05, 0.1, 0.2, 0.4], d: 2, desc: t('m.pvLand.d') },
   ] },
   { group: 'Demand', items: [
-    { key: 'demand', label: 'Electricity demand', unit: 'GWh', breaks: [250, 500, 1000, 1500], d: 0, desc: 'Electricity used per year, incl. industry.' },
-    { key: 'perCap', label: 'Per inhabitant', unit: 'kWh', breaks: [4000, 6000, 8000, 10000], d: 0, desc: 'Electricity use divided by population.' },
-    { key: 'heat', label: 'Heat demand', soon: true, desc: 'Coming with heat-sector data.' },
+    { key: 'demand', label: t('m.demand'), unit: 'GWh', breaks: [250, 500, 1000, 1500], d: 0, desc: t('m.demand.d') },
+    { key: 'perCap', label: t('m.perCap'), unit: 'kWh', breaks: [4000, 6000, 8000, 10000], d: 0, desc: t('m.perCap.d') },
+    { key: 'heat', label: t('m.heat'), soon: true, desc: t('m.heat.d') },
   ] },
 ];
 const METRIC = Object.fromEntries(METRICS.flatMap((g) => g.items).map((m) => [m.key, m]));
@@ -69,21 +69,27 @@ const SCALE = ['#e6edf1', '#bccbd4', '#8aa3b1', '#56778a', '#214152'];
 
 const CONTEXT_LAYERS = [
   { group: 'Energy potential', items: [
-    { id: 'potential', label: 'Suitable for wind (demo)', color: 'rgba(3,126,158,.18)' },
-    { id: 'pvpotential', label: 'Suitable for solar (demo)', color: 'rgba(255,216,0,.35)' },
+    { id: 'potential', label: t('ly.potential'), color: 'rgba(3,126,158,.18)' },
+    { id: 'pvpotential', label: t('ly.pvpotential'), color: 'rgba(255,216,0,.35)' },
   ] },
   { group: 'Settlements & infrastructure', items: [
-    { id: 'excluded', label: 'Within 1 km of settlements', color: 'rgba(142,154,161,.4)' },
-    { id: 'grid', label: 'Power grid ≥ 110 kV', soon: true },
+    { id: 'excluded', label: t('ly.excluded'), color: 'rgba(142,154,161,.4)' },
+    { id: 'grid', label: t('ly.grid'), soon: true },
   ] },
   { group: 'Nature', items: [
-    { id: 'nature', label: 'Nature & forest (demo)', color: 'rgba(102,204,102,.45)' },
-    { id: 'water', label: 'Water protection areas', soon: true },
+    { id: 'nature', label: t('ly.nature'), color: 'rgba(102,204,102,.45)' },
+    { id: 'water', label: t('ly.water'), soon: true },
   ] },
 ];
 
-const fmt = (n, d = 0) => n.toLocaleString('en-GB', { maximumFractionDigits: d, minimumFractionDigits: d });
-const eur = (n) => n >= 1e6 ? `€${fmt(n / 1e6, 1)}m` : n > 0 ? `€${fmt(Math.round(n / 1000) * 1000)}` : '€0';
+const fmt = (n, d = 0) => n.toLocaleString(I18N.locale, { maximumFractionDigits: d, minimumFractionDigits: d });
+// € amounts: "€10.1m" / "10,1 Mio. €"
+const eurM = (m) => (I18N.lang === 'de' ? `${fmt(m, 1)} Mio. €` : `€${fmt(m, 1)}m`);
+const eur = (n) => {
+  if (n >= 1e6) return eurM(n / 1e6);
+  const v = n > 0 ? fmt(Math.round(n / 1000) * 1000) : '0';
+  return I18N.lang === 'de' ? `${v} €` : `€${v}`;
+};
 const $ = (s) => document.querySelector(s);
 
 const state = {
@@ -222,21 +228,21 @@ const isTodayLike = () => state.mode === 'today' || state.mode === 'home';
 
 // One shape for every card: label · change badge / value / bar (today tick, target) / note.
 const KPI_CARDS = [
-  { id: 'share', label: 'Renewable share', dot: 'var(--navy)', v: (r) => r.share, show: (v) => [fmt(v), '%'],
-    max: 200, target: 100, d: 0, unit: ' pts', note: 'Of demand · target 100 %' },
-  { id: 'turbines', label: 'Wind turbines', dot: 'var(--wind)', v: (r) => r.turbines, show: (v) => [`≈ ${fmt(v)}`, ''],
-    max: 620, d: 0, unit: '', note: 'As 6.5 MW equivalents' },
-  { id: 'land', label: 'Land for wind', dot: 'var(--wind)', v: (r) => r.windPct, show: (v) => [fmt(v, 2), '%'],
-    max: 3.3, target: 2.2, d: 2, unit: ' pts', note: 'Of the region · target 2.2 %' },
-  { id: 'eeg', label: 'For municipalities', dot: 'var(--navy)', v: (r) => r.eeg / 1e6, show: (v) => [`€${fmt(v, 1)}m`, '/ year'],
-    max: 27, d: 1, unit: 'm', pre: '€', note: '§ 6 EEG payments' },
+  { id: 'share', label: t('k.share'), dot: 'var(--navy)', v: (r) => r.share, show: (v) => [fmt(v), '%'],
+    max: 200, target: 100, delta: (d) => `${fmt(d)}${t('k.pts')}`, note: t('k.share.n') },
+  { id: 'turbines', label: t('k.turbines'), dot: 'var(--wind)', v: (r) => r.turbines, show: (v) => [`≈ ${fmt(v)}`, ''],
+    max: 620, delta: (d) => fmt(d), note: t('k.turbines.n') },
+  { id: 'land', label: t('k.land'), dot: 'var(--wind)', v: (r) => r.windPct, show: (v) => [fmt(v, 2), '%'],
+    max: 3.3, target: 2.2, delta: (d) => `${fmt(d, 2)}${t('k.pts')}`, note: t('k.land.n') },
+  { id: 'eeg', label: t('k.eeg'), dot: 'var(--navy)', v: (r) => r.eeg / 1e6, show: (v) => [eurM(v), t('perYear')],
+    max: 27, delta: (d) => eurM(d), note: t('k.eeg.n') },
 ];
 const kpiShown = {};   // last value per card, for count-up
 
 function buildKpis() {
   $('#kpis').innerHTML = `
-    <button type="button" class="kcard ctx" data-goto="plan-start" aria-label="Change scenario">
-      <span class="khead"><span class="klabel">Showing</span><span class="pill ghost">·</span></span>
+    <button type="button" class="kcard ctx" data-goto="plan-start" aria-label="${t('k.change')}">
+      <span class="khead"><span class="klabel">${t('k.showing')}</span><span class="pill ghost">·</span></span>
       <span class="kval" id="k-ctx"></span>
       <span class="kmeter ctx-meter" aria-hidden="true"><span id="k-ctx-bar"></span></span>
       <span class="ksub" id="k-ctx-sub"></span>
@@ -246,9 +252,9 @@ function buildKpis() {
       <span class="khead"><span class="klabel"><i style="background:${c.dot}"></i>${c.label}</span><span class="pill" id="k-${c.id}-pill"></span></span>
       <span class="kval"><span id="k-${c.id}-val"></span> <small id="k-${c.id}-unit"></small></span>
       <span class="kmeter"><span class="fill" id="k-${c.id}-bar" style="background:${c.dot}"></span>
-        <i class="today-tick" id="k-${c.id}-tick" title="Today"></i>${c.target ? `<i class="target" style="left:${c.target / c.max * 100}%" title="Target"></i>` : ''}</span>
+        <i class="today-tick" id="k-${c.id}-tick" title="${t('k.today')}"></i>${c.target ? `<i class="target" style="left:${c.target / c.max * 100}%" title="Target"></i>` : ''}</span>
       <span class="ksub">${c.note}</span>
-      <span class="kmore" aria-hidden="true">Details</span>
+      <span class="kmore" aria-hidden="true">${t('k.details')}</span>
     </button>`).join('')}`;
   $('#kpis').addEventListener('click', (e) => {
     const card = e.target.closest('.kcard[data-k]'); if (!card) return;
@@ -270,8 +276,8 @@ function tween(el, from, to, show, ms = 1400) {
 function renderKpis(r, base) {
   const today = isTodayLike();
   const v = today ? base : r;
-  $('#k-ctx').textContent = today ? 'Today' : SCENARIOS[state.scenario].label;
-  $('#k-ctx-sub').textContent = today ? 'Current estimate' : 'Scenario · click to change';
+  $('#k-ctx').textContent = today ? t('k.today') : SCENARIOS[state.scenario].label;
+  $('#k-ctx-sub').textContent = today ? t('k.estimate') : t('k.scenario');
   $('#k-ctx-bar').style.width = `${{ heute: 25, bb30: 50, bb40: 75, eigen: 100 }[today ? 'heute' : state.scenario]}%`;
 
   KPI_CARDS.forEach((c) => {
@@ -286,7 +292,7 @@ function renderKpis(r, base) {
     tick.style.left = `${Math.min(then / c.max, 1) * 100}%`;
     tick.hidden = today;
     const p = $(`#k-${c.id}-pill`), d = now - then;
-    const txt = today ? '·' : Math.abs(d) < 1e-9 ? 'Same as today' : `${d > 0 ? '▲' : '▼'} ${c.pre || ''}${fmt(Math.abs(d), c.d)}${c.unit}`;
+    const txt = today ? '·' : Math.abs(d) < 1e-9 ? t('k.same') : `${d > 0 ? '▲' : '▼'} ${c.delta(Math.abs(d))}`;
     if (p.textContent !== txt) { p.textContent = txt; p.classList.remove('pop'); void p.offsetWidth; p.classList.add('pop'); }
     p.classList.toggle('ghost', today);
   });
@@ -309,54 +315,54 @@ function openDrawer(id) {
 function renderDrawer(r, base) {
   const today = isTodayLike();
   const v = today ? base : r;
-  const ctx = today ? 'Today' : SCENARIOS[state.scenario].label;
+  const ctx = today ? t('k.today') : SCENARIOS[state.scenario].label;
   const bar = (label, val, max, color, txt) => `<div class="dline"><span>${label}</span>
     <span class="dtrack"><span style="width:${Math.min(val / max, 1) * 100}%;background:${color}"></span></span><b>${txt}</b></div>`;
-  const cmp = (label, a, b) => `<dt>${label}</dt><dd>${a}${today ? '' : ` <small>today ${b}</small>`}</dd>`;
+  const cmp = (label, a, b) => `<dt>${label}</dt><dd>${a}${today ? '' : ` <small>${t('res.today', { x: b })}</small>`}</dd>`;
   let title = '', body = '';
   switch (state.drawer) {
     case 'share': {
       const max = Math.max(v.gen, v.demand);
-      title = 'Renewable share';
-      body = `<p class="dlead"><b>${fmt(v.share)} %</b> of the electricity used in the region is generated by wind and solar here (${ctx}).</p>
-        <h4>Generation vs. demand (GWh / year)</h4>
-        ${bar('Wind', v.windGWh, max, 'var(--wind)', fmt(v.windGWh))}
-        ${bar('Ground solar', v.ffGWh, max, 'var(--solar)', fmt(v.ffGWh))}
-        ${bar('Rooftop solar', v.roofGWh, max, 'var(--solar-roof)', fmt(v.roofGWh))}
-        ${bar('Demand', v.demand, max, 'var(--s4)', fmt(v.demand))}
-        <p class="dnote">Above 100 % means the region produces more than it uses over the year, not in every hour. Storage and the grid balance the rest.</p>`;
+      title = t('k.share');
+      body = `<p class="dlead">${t('d.share.lead', { v: `${fmt(v.share)} %`, ctx })}</p>
+        <h4>${t('d.share.h')}</h4>
+        ${bar(t('src.wind'), v.windGWh, max, 'var(--wind)', fmt(v.windGWh))}
+        ${bar(t('src.ffShort'), v.ffGWh, max, 'var(--solar)', fmt(v.ffGWh))}
+        ${bar(t('src.roof'), v.roofGWh, max, 'var(--solar-roof)', fmt(v.roofGWh))}
+        ${bar(t('src.demand'), v.demand, max, 'var(--s4)', fmt(v.demand))}
+        <p class="dnote">${t('d.share.note')}</p>`;
       break;
     }
     case 'turbines':
-      title = 'Wind turbines';
-      body = `<p class="dlead"><b>≈ ${fmt(v.turbines)} turbines</b>${today ? '' : `, ${fmt(Math.max(0, r.turbines - base.turbines))} more than today`}.</p>
-        <dl class="kv">${cmp('Capacity', `${fmt(state.mode === 'today' || state.mode === 'home' ? SCENARIOS.heute.wind : state.wind)} MW`, `${fmt(SCENARIOS.heute.wind)} MW`)}
-        ${cmp('Electricity', `${fmt(v.windGWh / 1000, 1)} TWh/yr`, `${fmt(base.windGWh / 1000, 1)} TWh`)}
-        <dt>Per turbine</dt><dd>${fmt(ASSUME.mwPerTurbine, 1)} MW · ${fmt(ASSUME.mwPerTurbine * ASSUME.flhWind / 1000, 1)} GWh/yr</dd></dl>
-        <p class="dnote">Counted as modern 6.5 MW turbines. Many older turbines today are smaller, so the real count is higher.</p>
-        <button type="button" class="btn secondary" data-layer-on="potential">Show on map</button>`;
+      title = t('k.turbines');
+      body = `<p class="dlead">${t('d.turb.lead', { n: fmt(v.turbines) })}${today ? '' : t('d.turb.more', { n: fmt(Math.max(0, r.turbines - base.turbines)) })}.</p>
+        <dl class="kv">${cmp(t('d.capacity'), `${fmt(today ? SCENARIOS.heute.wind : state.wind)} MW`, `${fmt(SCENARIOS.heute.wind)} MW`)}
+        ${cmp(t('d.electricity'), `${fmt(v.windGWh / 1000, 1)} ${t('u.twhYr')}`, `${fmt(base.windGWh / 1000, 1)} TWh`)}
+        <dt>${t('d.perTurbine')}</dt><dd>${fmt(ASSUME.mwPerTurbine, 1)} MW · ${fmt(ASSUME.mwPerTurbine * ASSUME.flhWind / 1000, 1)} ${t('u.gwhYr')}</dd></dl>
+        <p class="dnote">${t('d.turb.note')}</p>
+        <button type="button" class="btn secondary" data-layer-on="potential">${t('d.showMap')}</button>`;
       break;
     case 'land': {
       const targetHa = geo.regionHa * ASSUME.windAreaTargetPct / 100;
-      title = 'Land for wind';
-      body = `<p class="dlead"><b>${fmt(v.windPct, 2)} %</b> of the region, ${fmt(v.windHa)} ha. The 2032 target is ${fmt(ASSUME.windAreaTargetPct, 1)} % (${fmt(targetHa)} ha).</p>
-        <h4>Progress to target</h4>
-        ${bar('Wind land', v.windHa, targetHa, 'var(--wind)', `${fmt(v.windHa / targetHa * 100)} %`)}
-        <dl class="kv">${cmp('Wind land', `${fmt(v.windHa)} ha`, `${fmt(base.windHa)} ha`)}
-        ${cmp('Solar land', `${fmt(v.pvHa)} ha`, `${fmt(base.pvHa)} ha`)}
-        <dt>Suitable for wind (demo)</dt><dd>${fmt(geo.windOrder.length * geo.cellHa)} ha</dd></dl>
-        <button type="button" class="btn secondary" data-layer-on="potential">Show on map</button>`;
+      title = t('k.land');
+      body = `<p class="dlead">${t('d.land.lead', { pct: `${fmt(v.windPct, 2)} %`, ha: fmt(v.windHa), t: `${fmt(ASSUME.windAreaTargetPct, 1)} %`, tha: fmt(targetHa) })}</p>
+        <h4>${t('d.land.h')}</h4>
+        ${bar(t('d.windLand'), v.windHa, targetHa, 'var(--wind)', `${fmt(v.windHa / targetHa * 100)} %`)}
+        <dl class="kv">${cmp(t('d.windLand'), `${fmt(v.windHa)} ha`, `${fmt(base.windHa)} ha`)}
+        ${cmp(t('d.solarLand'), `${fmt(v.pvHa)} ha`, `${fmt(base.pvHa)} ha`)}
+        <dt>${t('d.suitable')}</dt><dd>${fmt(geo.windOrder.length * geo.cellHa)} ha</dd></dl>
+        <button type="button" class="btn secondary" data-layer-on="potential">${t('d.showMap')}</button>`;
       break;
     }
     case 'eeg': {
       const perTurbine = ASSUME.mwPerTurbine * ASSUME.flhWind * 1000 * ASSUME.eegEurPerKwh;
-      title = 'Income for municipalities';
-      body = `<p class="dlead"><b>${eur(v.eeg)} a year</b> if all operators pay the voluntary § 6 EEG share of 0.2 ct/kWh.</p>
-        <dl class="kv">${cmp('From wind', eur(v.windGWh * 1e6 * ASSUME.eegEurPerKwh), eur(base.windGWh * 1e6 * ASSUME.eegEurPerKwh))}
-        ${cmp('From ground solar', eur(v.ffGWh * 1e6 * ASSUME.eegEurPerKwh), eur(base.ffGWh * 1e6 * ASSUME.eegEurPerKwh))}
-        <dt>One turbine</dt><dd>≈ ${eur(perTurbine)} / year</dd></dl>
-        <p class="dnote">Wind payments go to all municipalities within 2.5 km of a turbine. Rooftop solar doesn't count.</p>
-        <button type="button" class="btn secondary" data-goto="place">Check a town</button>`;
+      title = t('d.eeg.title');
+      body = `<p class="dlead">${t('d.eeg.lead', { v: eur(v.eeg) })}</p>
+        <dl class="kv">${cmp(t('d.fromWind'), eur(v.windGWh * 1e6 * ASSUME.eegEurPerKwh), eur(base.windGWh * 1e6 * ASSUME.eegEurPerKwh))}
+        ${cmp(t('d.fromFF'), eur(v.ffGWh * 1e6 * ASSUME.eegEurPerKwh), eur(base.ffGWh * 1e6 * ASSUME.eegEurPerKwh))}
+        <dt>${t('d.oneTurbine')}</dt><dd>≈ ${eur(perTurbine)} ${t('perYear')}</dd></dl>
+        <p class="dnote">${t('d.eeg.note')}</p>
+        <button type="button" class="btn secondary" data-goto="place">${t('d.checkTown')}</button>`;
       break;
     }
   }
@@ -385,7 +391,7 @@ function buildDrawer() {
 const catOf = (key) => METRICS.find((g) => g.items.some((m) => m.key === key)).group;
 
 function buildToday() {
-  $('#catTabs').innerHTML = METRICS.map((g) => `<button type="button" role="tab" data-cat="${g.group}">${g.group}</button>`).join('');
+  $('#catTabs').innerHTML = METRICS.map((g) => `<button type="button" role="tab" data-cat="${g.group}">${t(`grp.${g.group}`)}</button>`).join('');
   $('#catTabs').addEventListener('click', (e) => {
     const b = e.target.closest('[data-cat]'); if (!b) return;
     state.metric = METRICS.find((g) => g.group === b.dataset.cat).items[0].key;
@@ -405,7 +411,7 @@ function renderToday(base) {
   if ($('#metricList').dataset.cat !== cat) {
     $('#metricList').dataset.cat = cat;
     $('#metricList').innerHTML = group.items.map((m) => m.soon
-      ? `<button type="button" class="mopt" disabled><span class="radio radio-off" aria-hidden="true"></span><span class="mtxt"><b>${m.label}</b><span>${m.desc}</span></span><span class="soon">soon</span></button>`
+      ? `<button type="button" class="mopt" disabled><span class="radio radio-off" aria-hidden="true"></span><span class="mtxt"><b>${m.label}</b><span>${m.desc}</span></span><span class="soon">${t('soon')}</span></button>`
       : `<button type="button" class="mopt" role="radio" data-m="${m.key}"><span class="anim radio" data-anim="radioButton" data-on="false" aria-hidden="true"></span><span class="mtxt"><b>${m.label}</b><span>${m.desc}</span></span><em>${fmt(regionMetric(m.key), m.d)} ${m.unit}</em></button>`).join('');
   }
   $('#metricList').querySelectorAll('.mopt[data-m]').forEach((b) => {
@@ -420,14 +426,14 @@ function renderToday(base) {
   }));
   const max = Math.max(...rows.map((r) => r.v), m.key === 'share' ? 150 : 0);
   const mix = [
-    ['wind', 'Wind', base.windGWh], ['solar', 'Ground-mounted solar', base.ffGWh], ['solar-roof', 'Rooftop solar', base.roofGWh],
+    ['wind', t('src.wind'), base.windGWh], ['solar', t('src.ff'), base.ffGWh], ['solar-roof', t('src.roof'), base.roofGWh],
   ];
   $('#todayDeep').innerHTML = `
     <div class="deep">
-      <h4>Electricity mix today</h4>
+      <h4>${t('mix.title')}</h4>
       <div class="mixbar">${mix.map(([c, , g]) => `<span style="width:${g / base.gen * 100}%;background:var(--${c})"></span>`).join('')}</div>
       <div class="mixkey">${mix.map(([c, l, g]) => `<span class="k"><i class="sw" style="background:var(--${c})"></i>${l}</span><span class="v">${fmt(g)} GWh · ${fmt(g / base.gen * 100)} %</span>`).join('')}</div>
-      <h4>${m.label} by district</h4>
+      <h4>${t('mix.byDistrict', { x: m.label })}</h4>
       ${rows.map((r) => `<div class="drow"><span>${r.name}</span>
         <div class="dbar"><span style="width:${r.v / max * 100}%"></span>${m.key === 'share' ? `<i class="target" style="left:${100 / max * 100}%"></i>` : ''}</div>
         <span class="v">${fmt(r.v, m.d)} ${m.unit}</span></div>`).join('')}
@@ -451,8 +457,8 @@ function buildPlan() {
   $('#startList').innerHTML = ['heute', 'bb30', 'bb40', 'eigen'].map((k) => {
     const s = SCENARIOS[k];
     const nums = k === 'eigen' ? '' : `<span class="start-nums">
-        <span><i style="background:var(--wind)"></i><b>${fmt(s.wind)}</b> MW wind</span>
-        <span><i style="background:var(--solar)"></i><b>${fmt(s.ff + s.roof)}</b> MWp solar</span></span>`;
+        <span><i style="background:var(--wind)"></i><b>${fmt(s.wind)}</b> ${t('start.wind')}</span>
+        <span><i style="background:var(--solar)"></i><b>${fmt(s.ff + s.roof)}</b> ${t('start.solar')}</span></span>`;
     return `<button type="button" class="start" data-start="${k}">
       <span class="start-hd"><b>${s.label}</b><span class="tag">${s.short}</span></span>
       <span class="start-line">${s.line}</span>${nums}
@@ -477,7 +483,7 @@ function buildPlan() {
       const low = pos - prev < 13; // stagger labels that would collide
       prev = low ? -100 : pos;
       return `<button type="button" class="tick${low ? ' low' : ''}" style="left:${pos}%" data-key="${s.key}" data-val="${val}"
-        aria-label="Set ${s.label} to ${SCENARIOS[k].label}">${{ heute: 'today', bb30: '2030', bb40: '2040' }[k]}</button>`;
+        aria-label="${t('sl.set', { what: s.label, to: SCENARIOS[k].label })}">${{ heute: t('tick.today'), bb30: '2030', bb40: '2040' }[k]}</button>`;
     }).join('');
     return `<div class="slider">
       <div class="slider-head">
@@ -527,20 +533,20 @@ function matchScenario() {
 
 function plain(key, v, r) {
   switch (key) {
-    case 'wind': return `≈ ${fmt(r.turbines)} turbines on ${fmt(r.windHa)} ha`;
-    case 'ff': return `≈ ${fmt(r.pvHa / ASSUME.haPerPitch)} football pitches of land`;
-    case 'roof': return `≈ ${fmt(v.roof * 1000 / ASSUME.kwpPerRoof)} house roofs`;
-    case 'demand': return `≈ ${fmt(r.demand)} GWh a year${v.demand > 100 ? ' (heat pumps, EVs, industry)' : ''}`;
+    case 'wind': return t('plain.wind', { n: fmt(r.turbines), ha: fmt(r.windHa) });
+    case 'ff': return t('plain.ff', { n: fmt(r.pvHa / ASSUME.haPerPitch) });
+    case 'roof': return t('plain.roof', { n: fmt(v.roof * 1000 / ASSUME.kwpPerRoof) });
+    case 'demand': return t('plain.demand', { n: fmt(r.demand) }) + (v.demand > 100 ? t('plain.demandUp') : '');
   }
 }
 
 function renderPlan(r, base, alloc) {
   const own = state.scenario === 'eigen';
   $('#startList').querySelectorAll('[data-start]').forEach((b) => b.setAttribute('aria-current', String(b.dataset.start === state.scenario)));
-  $('#planTitle').textContent = own ? 'Your own scenario' : `Starting from ${SCENARIOS[state.scenario].label}`;
+  $('#planTitle').textContent = own ? t('plan.own') : t('plan.from', { x: SCENARIOS[state.scenario].label });
   $('#scenarioNote').innerHTML = own
-    ? `Built on ${SCENARIOS[state.lastPreset].label}. <button type="button" data-reset>Reset to ${SCENARIOS[state.lastPreset].label}</button>`
-    : state.customising ? 'Move the sliders to make it your own.' : 'Move the sliders to see what changes.';
+    ? `${t('plan.builtOn', { x: SCENARIOS[state.lastPreset].label })} <button type="button" data-reset>${t('plan.reset', { x: SCENARIOS[state.lastPreset].label })}</button>`
+    : state.customising ? t('plan.moveOwn') : t('plan.move');
 
   SLIDERS.forEach((s) => {
     const el = $(`#sl-${s.key}`);
@@ -555,23 +561,23 @@ function renderPlan(r, base, alloc) {
   if (warn._on !== alloc.windShort) {
     warn._on = alloc.windShort;
     warn.innerHTML = alloc.windShort
-      ? `<div class="warn"><span class="anim warn-ico" data-anim="alertTriangle" data-color="#B80000" aria-hidden="true"></span><span>This needs more land than the analysis rates as suitable (${fmt(alloc.windAvailHa)} ha). Distances or protection rules would have to change.</span></div>` : '';
+      ? `<div class="warn"><span class="anim warn-ico" data-anim="alertTriangle" data-color="#B80000" aria-hidden="true"></span><span>${t('plan.warn', { ha: fmt(alloc.windAvailHa) })}</span></div>` : '';
     if (alloc.windShort) Anim.replay(warn.querySelector('.anim'));
   }
 
   const row = (label, now, then, unit, d = 0) =>
-    `<dt>${label}</dt><dd>${fmt(now, d)} ${unit} <small>(today ${fmt(then, d)})</small></dd>`;
+    `<dt>${label}</dt><dd>${fmt(now, d)}${unit} <small>(${t('res.today', { x: fmt(then, d) })})</small></dd>`;
   $('#moreResults').innerHTML = `<dl class="kv">
-    ${row('Electricity generated', r.gen / 1000, base.gen / 1000, 'TWh', 1)}
-    ${row('Electricity demand', r.demand / 1000, base.demand / 1000, 'TWh', 1)}
-    ${row('Households supplied', r.households / 1e6, base.households / 1e6, 'm', 2)}
-    ${row('Land for solar', r.pvPct, base.pvPct, '%', 2)}
-    ${row('CO₂ avoided', r.co2t / 1e6, base.co2t / 1e6, 'm t', 2)}
+    ${row(t('res.gen'), r.gen / 1000, base.gen / 1000, ' TWh', 1)}
+    ${row(t('res.demand'), r.demand / 1000, base.demand / 1000, ' TWh', 1)}
+    ${row(t('res.households'), r.households / 1e6, base.households / 1e6, t('u.m'), 2)}
+    ${row(t('res.pvLand'), r.pvPct, base.pvPct, ' %', 2)}
+    ${row(t('res.co2'), r.co2t / 1e6, base.co2t / 1e6, t('u.mt'), 2)}
   </dl>`;
 }
 
 /* ---------- My place ---------- */
-const COMPASS = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+const COMPASS = t('compass').split(',');
 function bearing(ax, ay, bx, by) {
   const a = Math.atan2((bx - ax) * KX, (by - ay) * KY) * 180 / Math.PI;
   return COMPASS[Math.round(((a + 360) % 360) / 45) % 8];
@@ -579,7 +585,7 @@ function bearing(ax, ay, bx, by) {
 
 function renderPlace() {
   const c = state.check;
-  const scen = `Based on <b>${SCENARIOS[state.scenario].label}</b>. <button type="button" data-goto="plan-start">Change scenario</button>`;
+  const scen = `${t('pl.basedOn', { x: SCENARIOS[state.scenario].label })} <button type="button" data-goto="plan-start">${t('k.change')}</button>`;
   if (!c) {
     $('#placeOut').innerHTML = `<p class="note">${scen}</p>`;
     return;
@@ -605,18 +611,18 @@ function renderPlace() {
   const newT = Math.round(withinNew * mwPerCell / ASSUME.mwPerTurbine);
   const revenue = within * mwPerCell * ASSUME.flhWind * 1000 * ASSUME.eegEurPerKwh;
   const edge = Math.max(0, nearWindD - 0.78); // centroid → hex edge
-  const name = c.name || (nearPlace && nearPlaceD < 2.5 ? `Near ${nearPlace.n}` : 'Selected point');
+  const name = c.name || (nearPlace && nearPlaceD < 2.5 ? t('pl.near', { n: nearPlace.n }) : t('pl.point'));
 
   $('#placeOut').innerHTML = `
     <div class="place-hero">
       <span class="place-name">${name}</span>
-      <span class="place-num">${eur(revenue)} <small>/ year</small></span>
-      <span class="place-sub">${revenue ? 'For municipalities within 2.5 km of turbines (§ 6 EEG)' : 'No wind turbines within 2.5 km, so no § 6 EEG payment here'}</span>
+      <span class="place-num">${eur(revenue)} <small>${t('perYear')}</small></span>
+      <span class="place-sub">${revenue ? t('pl.subYes') : t('pl.subNo')}</span>
     </div>
     <dl class="kv">
-      <dt>Nearest wind area</dt><dd>${nearWind ? `${fmt(edge, 1)} km ${bearing(x, y, nearWind.x, nearWind.y)}` : 'none'}</dd>
-      <dt>Turbines within 2.5 km</dt><dd>≈ ${fmt(turbines)}${newT ? ` <small>(${fmt(newT)} new)</small>` : ''}</dd>
-      <dt>Solar within 2 km</dt><dd>${pvNear ? `≈ ${fmt(pvNear * geo.cellHa)} ha` : 'none'}</dd>
+      <dt>${t('pl.nearest')}</dt><dd>${nearWind ? `${fmt(edge, 1)} km ${bearing(x, y, nearWind.x, nearWind.y)}` : t('pl.none')}</dd>
+      <dt>${t('pl.turbines')}</dt><dd>≈ ${fmt(turbines)}${newT ? ` <small>(${t('pl.new', { n: fmt(newT) })})</small>` : ''}</dd>
+      <dt>${t('pl.solar')}</dt><dd>${pvNear ? `≈ ${fmt(pvNear * geo.cellHa)} ha` : t('pl.none')}</dd>
     </dl>
     <p class="note">${scen}</p>`;
 
@@ -647,15 +653,15 @@ function buildPlace() {
     const q = typed ? input.value.trim().toLowerCase() : '';
     shown = all.filter((p) => !q || p.n.toLowerCase().includes(q));
     hl = shown.length ? 0 : -1;
-    if (!shown.length) { list.innerHTML = '<li class="none">No place found</li>'; return; }
+    if (!shown.length) { list.innerHTML = `<li class="none">${t('pl.noneFound')}</li>`; return; }
     let html = '', grp = null;
     shown.forEach((p, k) => {
-      const g = p.t === 'v' ? 'Villages' : 'Towns';
+      const g = p.t === 'v' ? t('pl.villages') : t('pl.towns');
       if (g !== grp) { html += `<li class="grp" role="presentation">${g}</li>`; grp = g; }
       const name = q ? esc(p.n).replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'i'), '<mark>$1</mark>') : esc(p.n);
       const cur = state.check?.name === p.n;
       if (cur && !q) hl = k;
-      html += `<li class="opt${k === hl ? ' hl' : ''}${cur ? ' current' : ''}" role="option" aria-selected="${cur}" id="po-${k}" data-k="${k}">${name}${p.p ? `<small>${fmt(p.p)} inh.</small>` : ''}</li>`;
+      html += `<li class="opt${k === hl ? ' hl' : ''}${cur ? ' current' : ''}" role="option" aria-selected="${cur}" id="po-${k}" data-k="${k}">${name}${p.p ? `<small>${t('pl.inh', { n: fmt(p.p) })}</small>` : ''}</li>`;
     });
     list.innerHTML = html;
     list.querySelectorAll('.opt').forEach((o) => o.classList.toggle('hl', +o.dataset.k === hl));
@@ -684,7 +690,7 @@ function buildPlace() {
   const icon = $('#placeIcon .anim');
   const syncIcon = () => {
     Anim.set(icon, !!input.value);
-    $('#placeIcon').setAttribute('aria-label', input.value ? 'Clear' : 'Search places');
+    $('#placeIcon').setAttribute('aria-label', input.value ? t('pl.clear') : t('pl.search'));
   };
   input.addEventListener('input', () => { typed = true; syncIcon(); open(); });
   $('#placeIcon').addEventListener('click', () => {
@@ -713,10 +719,10 @@ function setLayers(open) {
 }
 
 function buildLayers() {
-  $('#layersPop').innerHTML = `<div class="pop-hd"><b>Map layers</b>
-      <button type="button" class="icon-btn" id="layersClose" aria-label="Close layers">${X_ICON}</button></div>` + CONTEXT_LAYERS.map((g) => `<div class="lgroup"><span>${g.group}</span>${g.items.map((l) =>
+  $('#layersPop').innerHTML = `<div class="pop-hd"><b>${t('map.layersTitle')}</b>
+      <button type="button" class="icon-btn" id="layersClose" aria-label="${t('map.layersClose')}">${X_ICON}</button></div>` + CONTEXT_LAYERS.map((g) => `<div class="lgroup"><span>${t(`lg.${g.group}`)}</span>${g.items.map((l) =>
     l.soon
-      ? `<label class="lopt disabled"><input type="checkbox" disabled> ${l.label}<span class="soon">soon</span></label>`
+      ? `<label class="lopt disabled"><input type="checkbox" disabled> ${l.label}<span class="soon">${t('soon')}</span></label>`
       : `<label class="lopt"><input type="checkbox" class="vh" data-layer="${l.id}"><span class="anim cb" data-anim="checkBox" data-on="false" aria-hidden="true"></span><i class="sw" style="background:${l.color}"></i>${l.label}</label>`,
   ).join('')}</div>`).join('');
   $('#layersBtn').addEventListener('click', () => setLayers($('#layersPop').hidden));
@@ -738,15 +744,15 @@ function renderLegend() {
       `<div><i style="background:${c}"></i>${i < 4 ? `${fmt(edges[i], m.d)}–${fmt(edges[i + 1], m.d)}` : `> ${fmt(edges[4], m.d)}`}</div>`).join('')}</div>`;
   } else {
     html = `<h4>${SCENARIOS[state.scenario].label}</h4>
-      <div class="row"><i class="sw wind-old"></i>Wind · existing</div>
-      <div class="row"><i class="sw wind-new"></i>Wind · new</div>
-      <div class="row"><i class="sw solar-old"></i>Solar · existing</div>
-      <div class="row"><i class="sw solar-new"></i>Solar · new</div>`;
+      <div class="row"><i class="sw wind-old"></i>${t('leg.windOld')}</div>
+      <div class="row"><i class="sw wind-new"></i>${t('leg.windNew')}</div>
+      <div class="row"><i class="sw solar-old"></i>${t('leg.solarOld')}</div>
+      <div class="row"><i class="sw solar-new"></i>${t('leg.solarNew')}</div>`;
   }
   const active = CONTEXT_LAYERS.flatMap((g) => g.items).filter((l) => state.layers.has(l.id));
   if (active.length) html += `<hr>${active.map((l) => `<div class="row"><i class="sw" style="background:${l.color}"></i>${l.label}</div>`).join('')}`;
   $('#legend').innerHTML = html;
-  $('#layersBtn').textContent = state.layers.size ? `Layers (${state.layers.size})` : 'Layers';
+  $('#layersBtn').textContent = state.layers.size ? t('map.layersN', { n: state.layers.size }) : t('map.layers');
 }
 
 /* ---------- Mobile: bottom sheet, modals, legend chip ---------- */
@@ -766,7 +772,7 @@ function setSheet(st, animate = true) {
   panel.classList.toggle('dragging', !animate);
   panel.dataset.sheet = st;
   panel.style.height = `${sheetHeights()[st]}px`;
-  $('#sheetHandle').setAttribute('aria-label', st === 'full' ? 'Collapse panel' : 'Expand panel');
+  $('#sheetHandle').setAttribute('aria-label', st === 'full' ? t('sheet.collapse') : t('sheet.expand'));
 }
 // Map padding so fitted areas aren't hidden under the sheet.
 function mapPadding() {
@@ -898,8 +904,8 @@ function syncMap() {
   map.getCanvas().style.cursor = state.mode === 'place' ? 'crosshair' : '';
 
   const hint = $('#mapHint');
-  const msg = state.mode === 'place' && !state.check ? 'Click anywhere on the map to see what the scenario means there'
-    : state.mode === 'plan' ? 'Tip: click the map to check a specific place' : '';
+  const msg = state.mode === 'place' && !state.check ? t('map.hintPlace')
+    : state.mode === 'plan' ? t('map.hintPlan') : '';
   hint.hidden = !msg;
   hint.textContent = msg;
 }
@@ -942,29 +948,30 @@ function readHash() {
 }
 
 function buildAssumptions() {
+  const row = (key, val) => `<tr><td>${t(key)}</td><td>${val}</td></tr>`;
   $('#assumptions').innerHTML = `
     <table>
-      <tr><td>Capacity per wind turbine</td><td>${fmt(ASSUME.mwPerTurbine, 1)} MW</td></tr>
-      <tr><td>Land per MW wind / MWp solar</td><td>${fmt(ASSUME.haPerMwWind, 2)} / ${fmt(ASSUME.haPerMwpPV, 1)} ha</td></tr>
-      <tr><td>Full-load hours wind / ground / rooftop</td><td>${fmt(ASSUME.flhWind)} / ${fmt(ASSUME.flhFF)} / ${fmt(ASSUME.flhRoof)} h</td></tr>
-      <tr><td>Electricity demand today</td><td>${fmt(DEMAND_TODAY)} GWh</td></tr>
-      <tr><td>Municipal payment, § 6 EEG</td><td>0.2 ct/kWh</td></tr>
-      <tr><td>Min. distance wind → settlements</td><td>${fmt(ASSUME.settleBufferKm, 1)} km</td></tr>
+      ${row('as.mw', `${fmt(ASSUME.mwPerTurbine, 1)} MW`)}
+      ${row('as.land', `${fmt(ASSUME.haPerMwWind, 2)} / ${fmt(ASSUME.haPerMwpPV, 1)} ha`)}
+      ${row('as.flh', `${fmt(ASSUME.flhWind)} / ${fmt(ASSUME.flhFF)} / ${fmt(ASSUME.flhRoof)} h`)}
+      ${row('as.demand', `${fmt(DEMAND_TODAY)} GWh`)}
+      ${row('as.eeg', `${fmt(0.2, 1)} ct/kWh`)}
+      ${row('as.dist', `${fmt(ASSUME.settleBufferKm, 1)} km`)}
     </table>
-    <p><b>Scenarios:</b> BB 2030 is the Brandenburg energy strategy broken down to this region (15.4 % share). BB 2040 applies the same share to the state's 2040 targets (15.5 GW wind, 33 GW solar); that step is our derivation, not an official value.</p>
-    <p><b>Real data:</b> district boundaries (GADM), settlements (© OpenStreetMap contributors), BB 2030 targets and land ratios from the
-      <a href="https://epp.rl-institut.de/de/" target="_blank" rel="noopener">EmPowerPlan tool</a> (RLI).</p>
-    <p><b>Estimates &amp; demo data:</b> district values are estimates; wind resource and nature/forest areas are simulated to show the principle.</p>
-    <p>Independent design prototype. Not a service of the State of Brandenburg; figures are not legally binding.</p>`;
+    <p>${t('as.scen')}</p>
+    <p>${t('as.real')}</p>
+    <p>${t('as.demo')}</p>
+    <p>${t('as.disc')}</p>`;
 }
 
 function buildUser() {
-  let name = 'Guest';
-  try { name = sessionStorage.getItem('empower.user') || 'Guest'; } catch { /* private mode */ }
-  $('#userName').textContent = name;
+  let name = '';
+  try { name = sessionStorage.getItem('empower.user') || ''; } catch { /* private mode */ }
+  if (name === 'Guest') name = '';
+  $('#userName').textContent = name || t('user.guest');
   const first = name.charAt(0).toUpperCase() + name.slice(1);
-  $('#wTitle').textContent = name === 'Guest' ? 'Welcome to EmPower' : `Hi ${first}, welcome back`;
-  $('#avatar').textContent = name[0];
+  $('#wTitle').textContent = name ? t('w.titleUser', { name: first }) : t('w.titleGuest');
+  $('#avatar').textContent = (name || t('user.guest'))[0];
   const btn = $('#userBtn'), menu = $('#userMenu');
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -986,6 +993,8 @@ function buildUser() {
   ]);
   prepareGeo(bb, places);
   readHash();
+  I18N.apply();
+  I18N.mountSwitcher($('#langDd'));
   buildKpis();
   buildDrawer();
   $('#wsToday').textContent = `${fmt(compute(SCENARIOS.heute).share)} %`;

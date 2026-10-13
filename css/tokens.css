@@ -60,3 +60,26 @@ button, input, select { font-family: inherit; }
 .btn.secondary:hover { border-color: var(--faint); box-shadow: var(--shadow-md); }
 .btn.block { width: 100%; }
 .btn:active { transform: scale(.98); }
+
+/* Language switcher — FarmDoc pattern: quiet "EN ⌄" text trigger, small menu */
+.lang-dd { position: relative; flex: none; }
+.lang-trigger {
+  display: flex; align-items: center; gap: 6px; padding: 8px 10px; border: 0; border-radius: var(--radius-sm);
+  background: none; color: var(--muted); font-size: 14px; font-weight: 700; cursor: pointer; letter-spacing: .02em;
+  transition: color .15s var(--ease);
+}
+.lang-trigger:hover, .lang-dd.open .lang-trigger { color: var(--navy); }
+.lang-trigger svg { transition: transform .2s var(--ease); }
+.lang-dd.open .lang-trigger svg { transform: rotate(180deg); }
+.lang-menu {
+  position: absolute; right: 0; top: calc(100% + 6px); z-index: 70; min-width: 150px; padding: 6px;
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-md);
+  opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity .15s var(--ease), transform .15s var(--ease);
+}
+.lang-dd.open .lang-menu { opacity: 1; transform: none; pointer-events: auto; }
+.lang-opt {
+  display: block; width: 100%; text-align: left; padding: 9px 10px; border: 0; border-radius: var(--radius-sm);
+  background: none; font-size: 14px; color: var(--ink); cursor: pointer; min-height: 40px;
+}
+.lang-opt:hover { background: var(--bg); }
+.lang-opt.active { color: var(--navy); font-weight: 700; }

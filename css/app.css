@@ -12,7 +12,8 @@ body { display: flex; flex-direction: column; min-width: 320px; overflow: hidden
 .brand-name { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; color: var(--navy); }
 .region-chip { font-size: 13px; color: var(--muted); border-left: 1px solid var(--line); padding-left: 16px; }
 
-.user { margin-left: auto; position: relative; }
+.lang-dd { margin-left: auto; }
+.user { position: relative; }
 .user-btn {
   display: flex; align-items: center; gap: 8px; border: 1px solid transparent; background: none; cursor: pointer;
   padding: 4px 8px 4px 4px; border-radius: 999px; font-size: 14px; color: var(--ink); text-transform: capitalize;

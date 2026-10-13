@@ -17,7 +17,7 @@
 })();
 
 function enter(user) {
-  try { sessionStorage.setItem('empower.user', user || 'Guest'); } catch { /* private mode */ }
+  try { sessionStorage.setItem('empower.user', user || ''); } catch { /* private mode */ }
   document.body.classList.add('leaving');
   setTimeout(() => { location.href = 'app.html'; }, 220);
 }
@@ -25,6 +25,9 @@ function enter(user) {
 document.getElementById('loginForm').addEventListener('submit', (e) => {
   e.preventDefault();
   const email = document.getElementById('loginEmail').value.trim();
-  enter(email ? email.split('@')[0] : 'Guest');
+  enter(email ? email.split('@')[0] : '');
 });
-document.querySelectorAll('[data-enter]').forEach((b) => b.addEventListener('click', () => enter('Guest')));
+document.querySelectorAll('[data-enter]').forEach((b) => b.addEventListener('click', () => enter('')));
+
+I18N.apply();
+I18N.mountSwitcher(document.getElementById('langDd'));

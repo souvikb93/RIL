@@ -26,7 +26,8 @@
 }
 .auth-card { width: 100%; max-width: 420px; }
 
-.auth-brand { display: flex; align-items: center; gap: 14px; margin-bottom: clamp(32px, 5vh, 56px); }
+.auth-hdr { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: clamp(32px, 5vh, 56px); }
+.auth-brand { display: flex; align-items: center; gap: 14px; }
 .auth-brand .mark { width: 52px; height: 52px; border-radius: 12px; }
 .auth-brand .mark img { height: 36px; width: auto; display: block; }
 /* line-height 1 so the wordmark's cap height centres on the mark, not its line box */
@@ -63,7 +64,7 @@ body.leaving .auth { opacity: 0; transition: opacity .25s var(--ease); }
 @media (max-width: 900px) {
   .auth-left { display: none; }
   .auth-right { align-items: flex-start; padding: calc(32px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom)); }
-  .auth-brand { margin-bottom: 32px; }
+  .auth-hdr { margin-bottom: 32px; }
   .auth-title { font-size: 24px; }
   .auth-sub { margin-bottom: 28px; }
   #loginEmail { font-size: 16px; } /* no iOS zoom-on-focus */
